@@ -71,6 +71,7 @@ set_location_assignment PIN_AT22 -to o_phy_port0_tx_d[1]
 set_location_assignment PIN_AE23 -to o_phy_port0_tx_d[2]
 set_location_assignment PIN_AD22 -to o_phy_port0_tx_d[3]
 set_location_assignment PIN_AP23 -to o_phy_port0_tx_en
+set_location_assignment PIN_AK23 -to o_phy_port0_tx_er
 
 set_instance_assignment -name FAST_INPUT_REGISTER ON -to i_phy_*
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to o_phy_*

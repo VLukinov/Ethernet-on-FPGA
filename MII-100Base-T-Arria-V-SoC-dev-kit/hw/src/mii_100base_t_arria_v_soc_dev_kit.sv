@@ -43,7 +43,8 @@ module mii_100base_t_arria_v_soc_dev_kit
     input logic i_phy_port0_rx_er,
     input logic i_phy_port0_tx_clk,
     output logic[3 : 0] o_phy_port0_tx_d,
-    output logic o_phy_port0_tx_en
+    output logic o_phy_port0_tx_en,
+    output logic o_phy_port0_tx_er
 );
     /// - Internal parameters & constants ----------------------------------------------------------
 
@@ -110,6 +111,7 @@ module mii_100base_t_arria_v_soc_dev_kit
         .phy_tx_clk(i_phy_port0_tx_clk),
         .phy_txd(o_phy_port0_tx_d),
         .phy_tx_en(o_phy_port0_tx_en),
+        .phy_tx_er(o_phy_port0_tx_er),
         .phy_col(),
         .phy_crs(),
         .phy_reset_n(o_phy_reset_n),

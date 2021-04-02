@@ -73,6 +73,7 @@ module fpga_core #
     input  wire       phy_tx_clk,
     output wire [3:0] phy_txd,
     output wire       phy_tx_en,
+    output wire       phy_tx_er,
     input  wire       phy_col,
     input  wire       phy_crs,
     output wire       phy_reset_n,
@@ -350,7 +351,7 @@ eth_mac_inst (
     .mii_tx_clk(phy_tx_clk),
     .mii_txd(phy_txd),
     .mii_tx_en(phy_tx_en),
-    .mii_tx_er(),
+    .mii_tx_er(phy_tx_er),
 
     .tx_fifo_overflow(),
     .tx_fifo_bad_frame(),
