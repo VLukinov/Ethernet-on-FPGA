@@ -42,29 +42,16 @@ module fpga_core #
     input  wire       rst,
 
     /*
-     * GPIO
+     * Ethernet configuration parameters
      */
-    input  wire [3:0] btn,
-    input  wire [3:0] sw,
-    output wire       led0_r,
-    output wire       led0_g,
-    output wire       led0_b,
-    output wire       led1_r,
-    output wire       led1_g,
-    output wire       led1_b,
-    output wire       led2_r,
-    output wire       led2_g,
-    output wire       led2_b,
-    output wire       led3_r,
-    output wire       led3_g,
-    output wire       led3_b,
-    output wire       led4,
-    output wire       led5,
-    output wire       led6,
-    output wire       led7,
+    input wire [47:0] local_mac,
+    input wire [31:0] local_ip,
+    input wire [31:0] gateway_ip,
+    input wire [31:0] subnet_mask,
+    input wire [15:0] udp_dest_port,
 
     /*
-     * Ethernet: 100BASE-T MII
+     * Ethernet PHY: 100BASE-T MII
      */
     input  wire       phy_rx_clk,
     input  wire [3:0] phy_rxd,
@@ -74,15 +61,9 @@ module fpga_core #
     output wire [3:0] phy_txd,
     output wire       phy_tx_en,
     output wire       phy_tx_er,
-    input  wire       phy_col,
-    input  wire       phy_crs,
     output wire       phy_reset_n,
-
-    /*
-     * UART: 115200 bps, 8N1
-     */
-    input  wire       uart_rxd,
-    output wire       uart_txd
+    input  wire       phy_col,
+    input  wire       phy_crs
 );
 
 // AXI between MAC and Ethernet modules
@@ -219,12 +200,6 @@ wire tx_fifo_udp_payload_axis_tready;
 wire tx_fifo_udp_payload_axis_tlast;
 wire tx_fifo_udp_payload_axis_tuser;
 
-// Configuration
-wire [47:0] local_mac   = 48'h02_00_00_00_00_00;
-wire [31:0] local_ip    = {8'd192, 8'd168, 8'd1,   8'd128};
-wire [31:0] gateway_ip  = {8'd192, 8'd168, 8'd1,   8'd1};
-wire [31:0] subnet_mask = {8'd255, 8'd255, 8'd255, 8'd0};
-
 // IP ports not used
 assign rx_ip_hdr_ready = 1;
 assign rx_ip_payload_axis_tready = 1;
@@ -243,7 +218,7 @@ assign tx_ip_payload_axis_tlast = 0;
 assign tx_ip_payload_axis_tuser = 0;
 
 // Loop back UDP
-wire match_cond = rx_udp_dest_port == 1234;
+wire match_cond = rx_udp_dest_port == udp_dest_port;
 wire no_match = !match_cond;
 
 reg match_cond_reg = 0;
@@ -291,31 +266,7 @@ assign rx_udp_payload_axis_tready = (rx_fifo_udp_payload_axis_tready && match_co
 assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
 assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
 
-// Place first payload byte onto LEDs
-reg valid_last = 0;
-reg [7:0] led_reg = 0;
-
-always @(posedge clk) begin
-    if (rst) begin
-        led_reg <= 0;
-    end else begin
-        if (tx_udp_payload_axis_tvalid) begin
-            if (!valid_last) begin
-                led_reg <= tx_udp_payload_axis_tdata;
-                valid_last <= 1'b1;
-            end
-            if (tx_udp_payload_axis_tlast) begin
-                valid_last <= 1'b0;
-            end
-        end
-    end
-end
-
-//assign led = sw;
-assign {led0_g, led1_g, led2_g, led3_g, led4, led5, led6, led7} = led_reg;
-assign phy_reset_n = !rst;
-
-assign uart_txd = 0;
+assign phy_reset_n = ~rst;
 
 eth_mac_mii_fifo #(
     .TARGET(TARGET),

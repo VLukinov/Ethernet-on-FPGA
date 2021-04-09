@@ -14,9 +14,9 @@ if [file exist work] {
 vlib work
 
 # Compile Altera Mega-Function library
-if ![file exist altera_mf] {
-    vlog -work altera_mf $::env(QUARTUS_ROOTDIR)/eda/sim_lib/altera_mf.v -createlib
-}
+# if ![file exist altera_mf] {
+#     vlog -work altera_mf $::env(QUARTUS_ROOTDIR)/eda/sim_lib/altera_mf.v -createlib
+# }
 
 # Compile all the Verilog sources in current folder into working library
 vlog ./$prj_name_tb.sv
@@ -56,7 +56,8 @@ vlog ../../../../verilog-ethernet/lib/axis/rtl/arbiter.v
 vlog ../../../../verilog-ethernet/lib/axis/rtl/priority_encoder.v
 
 # Open testbench module for simulation
-vsim -novopt work.$prj_name_tb -L altera_mf
+# vsim -novopt work.$prj_name_tb -L altera_mf
+vsim -debugdb work.$prj_name_tb
 
 # Add all testbench signals to waveform diagram
 # view wave -new -title $prj_name_tb

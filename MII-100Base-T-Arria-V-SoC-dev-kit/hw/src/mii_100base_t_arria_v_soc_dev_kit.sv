@@ -50,8 +50,14 @@ module mii_100base_t_arria_v_soc_dev_kit
 
     localparam FPGA_REFERENCE_CLOCK_FREQUENCY = 125000000;
     localparam FPGA_RESET_DELAY_MS = (FPGA_REFERENCE_CLOCK_FREQUENCY / 1000) * 1;
-    localparam FPGA_RESET_COUNTER_MODULE =FPGA_RESET_DELAY_MS;
+    localparam FPGA_RESET_COUNTER_MODULE = FPGA_RESET_DELAY_MS;
     localparam FPGA_RESET_COUNTER_WIDTH = $clog2(FPGA_RESET_COUNTER_MODULE);
+
+    localparam bit[47 : 0] LOCAL_MAC =      48'h02_00_00_00_00_00;
+    localparam bit[31 : 0] LOCAL_IP =       { 8'd192, 8'd168, 8'd1,   8'd128 };
+    localparam bit[31 : 0] GATEWAY_IP =     { 8'd192, 8'd168, 8'd1,   8'd1 };
+    localparam bit[31 : 0] SUBNET_MASK =    { 8'd255, 8'd255, 8'd255, 8'd0} ;
+    localparam bit[15 : 0] UDP_DEST_PORT =  16'd1234;
 
     /// - Internal logic ---------------------------------------------------------------------------
 
@@ -60,6 +66,12 @@ module mii_100base_t_arria_v_soc_dev_kit
     bit reset;
     bit reset_counter_en;
     bit[FPGA_RESET_COUNTER_WIDTH - 1 : 0] reset_counter;
+
+    bit[47 : 0] local_mac;
+    bit[31 : 0] local_ip;
+    bit[31 : 0] gateway_ip;
+    bit[31 : 0] subnet_mask;
+    bit[15 : 0] udp_dest_port;
 
     /// - Logic description ------------------------------------------------------------------------
 
@@ -73,6 +85,12 @@ module mii_100base_t_arria_v_soc_dev_kit
             reset_counter <= reset_counter + 1'b1;
     end
 
+    always_comb local_mac = LOCAL_MAC;
+    always_comb local_ip = LOCAL_IP;
+    always_comb gateway_ip = GATEWAY_IP;
+    always_comb subnet_mask = SUBNET_MASK;
+    always_comb udp_dest_port = UDP_DEST_PORT;
+
     /// - External modules -------------------------------------------------------------------------
 
     fpga_core #(
@@ -83,27 +101,14 @@ module mii_100base_t_arria_v_soc_dev_kit
         // Synchronous reset
         .rst(reset),
 
-        // GPIO
-        .btn(),
-        .sw(),
-        .led0_r(),
-        .led0_g(),
-        .led0_b(),
-        .led1_r(),
-        .led1_g(),
-        .led1_b(),
-        .led2_r(),
-        .led2_g(),
-        .led2_b(),
-        .led3_r(),
-        .led3_g(),
-        .led3_b(),
-        .led4(),
-        .led5(),
-        .led6(),
-        .led7(),
+        // Ethernet configuration parameters
+        .local_mac(local_mac),
+        .local_ip(local_ip),
+        .gateway_ip(gateway_ip),
+        .subnet_mask(subnet_mask),
+        .udp_dest_port(udp_dest_port),
 
-        // Ethernet: 100BASE-T MII (no GMII gtx_clk & no CRS, COL)
+        // Ethernet PHY: 100BASE-T MII (no GMII gtx_clk & no CRS, COL)
         .phy_rx_clk(i_phy_port0_rx_clk),
         .phy_rxd(i_phy_port0_rx_d),
         .phy_rx_dv(i_phy_port0_rx_dv),
@@ -112,13 +117,9 @@ module mii_100base_t_arria_v_soc_dev_kit
         .phy_txd(o_phy_port0_tx_d),
         .phy_tx_en(o_phy_port0_tx_en),
         .phy_tx_er(o_phy_port0_tx_er),
-        .phy_col(),
-        .phy_crs(),
         .phy_reset_n(o_phy_reset_n),
-
-        // UART: 115200 bps, 8N1
-        .uart_rxd(),
-        .uart_txd()
+        .phy_col(),
+        .phy_crs()
     );
 
     /// - Outputs ----------------------------------------------------------------------------------
