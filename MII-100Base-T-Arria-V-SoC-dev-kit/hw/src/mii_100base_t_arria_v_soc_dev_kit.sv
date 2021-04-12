@@ -33,7 +33,11 @@
  *
  */
 module mii_100base_t_arria_v_soc_dev_kit
-(
+#(
+    parameter FPGA_REFERENCE_CLOCK_FREQUENCY = 125000000,
+    parameter FPGA_RESET_DELAY_US = 20000,
+    parameter FPGA_RESET_DELAY_TICKS = (FPGA_REFERENCE_CLOCK_FREQUENCY / 1000000) * FPGA_RESET_DELAY_US
+)(
     input logic i_ref_clock,
 
     output logic o_phy_reset_n,
@@ -48,15 +52,13 @@ module mii_100base_t_arria_v_soc_dev_kit
 );
     /// - Internal parameters & constants ----------------------------------------------------------
 
-    localparam FPGA_REFERENCE_CLOCK_FREQUENCY = 125000000;
-    localparam FPGA_RESET_DELAY_MS = (FPGA_REFERENCE_CLOCK_FREQUENCY / 1000) * 1;
-    localparam FPGA_RESET_COUNTER_MODULE = FPGA_RESET_DELAY_MS;
+    localparam FPGA_RESET_COUNTER_MODULE = FPGA_RESET_DELAY_TICKS;
     localparam FPGA_RESET_COUNTER_WIDTH = $clog2(FPGA_RESET_COUNTER_MODULE);
 
     localparam bit[47 : 0] LOCAL_MAC =      48'h02_00_00_00_00_00;
     localparam bit[31 : 0] LOCAL_IP =       { 8'd192, 8'd168, 8'd1,   8'd128 };
     localparam bit[31 : 0] GATEWAY_IP =     { 8'd192, 8'd168, 8'd1,   8'd1 };
-    localparam bit[31 : 0] SUBNET_MASK =    { 8'd255, 8'd255, 8'd255, 8'd0} ;
+    localparam bit[31 : 0] SUBNET_MASK =    { 8'd255, 8'd255, 8'd255, 8'd0 };
     localparam bit[15 : 0] UDP_DEST_PORT =  16'd1234;
 
     /// - Internal logic ---------------------------------------------------------------------------

@@ -60,6 +60,9 @@ module verilog_ethernet_tb();
     bit phy_rx_dv;
     bit phy_rx_er;
 
+    bit[3 : 0] phy_tx_d;
+    bit phy_tx_en;
+
     bit[3 : 0] arp_packet[] = '{
         4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
         4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'h8, 4'h0, 4'h0, 4'h0,
@@ -70,6 +73,37 @@ module verilog_ethernet_tb();
         4'h1, 4'h0, 4'h0, 4'h8, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
         4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
         4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'hE, 4'h1, 4'hF, 4'hB, 4'h6, 4'h3, 4'hF
+    };
+
+    bit[3 : 0] icmp_windows_packet[] = '{
+        4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
+        4'h2, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'hD, 4'h7, 4'h3,
+        4'h5, 4'h4, 4'h8, 4'hB, 4'hF, 4'h8, 4'hC, 4'hC, 4'h8, 4'h0, 4'h0, 4'h0, 4'h5, 4'h4, 4'h0, 4'h0,
+        4'h0, 4'h0, 4'hC, 4'h3, 4'h1, 4'hE, 4'hA, 4'hD, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'h1, 4'h0,
+        4'h5, 4'hD, 4'h4, 4'h1, 4'h0, 4'hC, 4'h8, 4'hA, 4'h1, 4'h0, 4'h1, 4'h0, 4'h0, 4'hC, 4'h8, 4'hA,
+        4'h1, 4'h0, 4'h0, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'hC, 4'h4, 4'hC, 4'hF, 4'h0, 4'h0, 4'h1, 4'h0,
+        4'h0, 4'h0, 4'hF, 4'h5, 4'h1, 4'h6, 4'h2, 4'h6, 4'h3, 4'h6, 4'h4, 4'h6, 4'h5, 4'h6, 4'h6, 4'h6,
+        4'h7, 4'h6, 4'h8, 4'h6, 4'h9, 4'h6, 4'hA, 4'h6, 4'hB, 4'h6, 4'hC, 4'h6, 4'hD, 4'h6, 4'hE, 4'h6,
+        4'hF, 4'h6, 4'h0, 4'h7, 4'h1, 4'h7, 4'h2, 4'h7, 4'h3, 4'h7, 4'h4, 4'h7, 4'h5, 4'h7, 4'h6, 4'h7,
+        4'h7, 4'h7, 4'h1, 4'h6, 4'h2, 4'h6, 4'h3, 4'h6, 4'h4, 4'h6, 4'h5, 4'h6, 4'h6, 4'h6, 4'h7, 4'h6,
+        4'h8, 4'h6, 4'h9, 4'h6, 4'hF, 4'h3, 4'hD, 4'h0, 4'h3, 4'hF, 4'h8, 4'h1
+    };
+
+    bit[3 : 0] icmp_linux_packet[] = '{
+        4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
+        4'h2, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'h0, 4'h0, 4'h0,
+        4'h7, 4'h2, 4'h9, 4'hE, 4'hE, 4'h5, 4'h1, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'h5, 4'h4, 4'h0, 4'h0,
+        4'h0, 4'h0, 4'h4, 4'h5, 4'h5, 4'h7, 4'hB, 4'hD, 4'h0, 4'h4, 4'h0, 4'h0, 4'h0, 4'h4, 4'h1, 4'h0,
+        4'h0, 4'h4, 4'h3, 4'hF, 4'h0, 4'hC, 4'h8, 4'hA, 4'h1, 4'h0, 4'hA, 4'h0, 4'h0, 4'hC, 4'h8, 4'hA,
+        4'h1, 4'h0, 4'h0, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'hD, 4'h8, 4'hE, 4'h5, 4'h0, 4'h0, 4'h4, 4'h0,
+        4'h0, 4'h0, 4'h1, 4'h0, 4'h7, 4'h0, 4'hD, 4'h9, 4'h4, 4'h7, 4'h0, 4'h6, 4'h0, 4'h0, 4'h0, 4'h0,
+        4'h0, 4'h0, 4'h0, 4'h0, 4'h2, 4'h2, 4'hC, 4'hC, 4'hD, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
+        4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h1, 4'h1, 4'h1, 4'h2, 4'h1, 4'h3, 4'h1, 4'h4, 4'h1, 4'h5, 4'h1,
+        4'h6, 4'h1, 4'h7, 4'h1, 4'h8, 4'h1, 4'h9, 4'h1, 4'hA, 4'h1, 4'hB, 4'h1, 4'hC, 4'h1, 4'hD, 4'h1,
+        4'hE, 4'h1, 4'hF, 4'h1, 4'h0, 4'h2, 4'h1, 4'h2, 4'h2, 4'h2, 4'h3, 4'h2, 4'h4, 4'h2, 4'h5, 4'h2,
+        4'h6, 4'h2, 4'h7, 4'h2, 4'h8, 4'h2, 4'h9, 4'h2, 4'hA, 4'h2, 4'hB, 4'h2, 4'hC, 4'h2, 4'hD, 4'h2,
+        4'hE, 4'h2, 4'hF, 4'h2, 4'h0, 4'h3, 4'h1, 4'h3, 4'h2, 4'h3, 4'h3, 4'h3, 4'h4, 4'h3, 4'h5, 4'h3,
+        4'h6, 4'h3, 4'h7, 4'h3, 4'h5, 4'hE, 4'h5, 4'hF, 4'h5, 4'h0, 4'h6, 4'h1
     };
 
     /// - Logic description ------------------------------------------------------------------------
@@ -84,19 +118,58 @@ module verilog_ethernet_tb();
         while (!phy_reset_n) @(posedge eth_phy_clock);
         repeat (8) @(posedge eth_phy_clock);
 
-        phy_rx_dv = 1'b1;
-        for (int i = 0; i < $size(arp_packet); ++i) begin
-            phy_rx_d = arp_packet[i];
-            @(posedge eth_phy_clock);
+        // Sent ARP request
+        repeat (3) begin
+            phy_rx_dv = 1'b1;
+            for (int i = 0; i < $size(arp_packet); ++i) begin
+                phy_rx_d = arp_packet[i];
+                @(posedge eth_phy_clock);
+            end
+            phy_rx_dv = 1'b0;
+            phy_rx_d = 0;
+
+            while (!phy_tx_en) @(posedge eth_phy_clock);
+            while (phy_tx_en) @(posedge eth_phy_clock);
+            repeat (32) @(posedge eth_phy_clock);
         end
-        phy_rx_dv = 1'b0;
-        phy_rx_d = 0;
+
+        // Sent Windows ICMP request
+        repeat (3) begin
+            phy_rx_dv = 1'b1;
+            for (int i = 0; i < $size(icmp_windows_packet); ++i) begin
+                phy_rx_d = icmp_windows_packet[i];
+                @(posedge eth_phy_clock);
+            end
+            phy_rx_dv = 1'b0;
+            phy_rx_d = 0;
+
+            while (!phy_tx_en) @(posedge eth_phy_clock);
+            while (phy_tx_en) @(posedge eth_phy_clock);
+            repeat (32) @(posedge eth_phy_clock);
+        end
+
+        // Sent Linux ICMP request
+        repeat (3) begin
+            phy_rx_dv = 1'b1;
+            for (int i = 0; i < $size(icmp_linux_packet); ++i) begin
+                phy_rx_d = icmp_linux_packet[i];
+                @(posedge eth_phy_clock);
+            end
+            phy_rx_dv = 1'b0;
+            phy_rx_d = 0;
+
+            while (!phy_tx_en) @(posedge eth_phy_clock);
+            while (phy_tx_en) @(posedge eth_phy_clock);
+            repeat (32) @(posedge eth_phy_clock);
+        end
 
     end
 
     /// - External modules -------------------------------------------------------------------------
 
-    mii_100base_t_arria_v_soc_dev_kit mii_100base_t_arria_v_soc_dev_kit_i (
+    mii_100base_t_arria_v_soc_dev_kit #(
+        .FPGA_RESET_DELAY_US(1)
+    ) mii_100base_t_arria_v_soc_dev_kit_i (
         .i_ref_clock(clock),
 
         .o_phy_reset_n(phy_reset_n),
@@ -105,8 +178,8 @@ module verilog_ethernet_tb();
         .i_phy_port0_rx_dv(phy_rx_dv),
         .i_phy_port0_rx_er(phy_rx_er),
         .i_phy_port0_tx_clk(eth_phy_clock),
-        .o_phy_port0_tx_d(),
-        .o_phy_port0_tx_en()
+        .o_phy_port0_tx_d(phy_tx_d),
+        .o_phy_port0_tx_en(phy_tx_en)
     );
 
 endmodule

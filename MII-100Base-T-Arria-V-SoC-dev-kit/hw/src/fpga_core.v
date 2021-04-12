@@ -266,7 +266,9 @@ assign rx_udp_payload_axis_tready = (rx_fifo_udp_payload_axis_tready && match_co
 assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
 assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
 
-assign phy_reset_n = ~rst;
+reg phy_reset_n_reg;
+always @(posedge clk) phy_reset_n_reg <= ~rst;
+assign phy_reset_n = phy_reset_n_reg;
 
 eth_mac_mii_fifo #(
     .TARGET(TARGET),
