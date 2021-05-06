@@ -27,6 +27,9 @@
 `define HS_RECORDER_DATA_ROUTER_TB_SV_
 
 
+import verilog_ethernet_pack::*;
+
+
 /**
  *  module - "verilog_ethernet_tb"
  *  Test Bench for "ethernet_on_arria_v_soc_dev_kit" module
@@ -63,48 +66,79 @@ module verilog_ethernet_tb();
     bit[3 : 0] phy_tx_d;
     bit phy_tx_en;
 
-    bit[3 : 0] arp_packet[] = '{
-        4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
-        4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'hF, 4'h8, 4'h0, 4'h0, 4'h0,
-        4'h7, 4'h2, 4'h9, 4'hE, 4'hE, 4'h5, 4'h1, 4'h8, 4'h8, 4'h0, 4'h6, 4'h0, 4'h0, 4'h0, 4'h1, 4'h0,
-        4'h8, 4'h0, 4'h0, 4'h0, 4'h6, 4'h0, 4'h4, 4'h0, 4'h0, 4'h0, 4'h1, 4'h0, 4'h8, 4'h0, 4'h0, 4'h0,
-        4'h7, 4'h2, 4'h9, 4'hE, 4'hE, 4'h5, 4'h1, 4'h8, 4'h0, 4'hC, 4'h8, 4'hA, 4'h1, 4'h0, 4'hA, 4'h0,
-        4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'hC, 4'h8, 4'hA,
-        4'h1, 4'h0, 4'h0, 4'h8, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'hE, 4'h1, 4'hF, 4'hB, 4'h6, 4'h3, 4'hF
+    bit[7 : 0] arp_packet[] = '{
+        8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
+        8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'h08, 8'h00,
+        8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h06, 8'h00, 8'h01,
+        8'h08, 8'h00, 8'h06, 8'h04, 8'h00, 8'h01, 8'h08, 8'h00,
+        8'h27, 8'hE9, 8'h5E, 8'h81, 8'hC0, 8'hA8, 8'h01, 8'h0A,
+        8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'hC0, 8'hA8,
+        8'h01, 8'h80, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00,
+        8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00,
+        8'h00, 8'h00, 8'h00, 8'h00, 8'hE8, 8'hF1, 8'h6B, 8'hF3
     };
 
-    bit[3 : 0] icmp_windows_packet[] = '{
-        4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
-        4'h2, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'hD, 4'h7, 4'h3,
-        4'h5, 4'h4, 4'h8, 4'hB, 4'hF, 4'h8, 4'hC, 4'hC, 4'h8, 4'h0, 4'h0, 4'h0, 4'h5, 4'h4, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'hC, 4'h3, 4'h1, 4'hE, 4'hA, 4'hD, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'h1, 4'h0,
-        4'h5, 4'hD, 4'h4, 4'h1, 4'h0, 4'hC, 4'h8, 4'hA, 4'h1, 4'h0, 4'h1, 4'h0, 4'h0, 4'hC, 4'h8, 4'hA,
-        4'h1, 4'h0, 4'h0, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'hC, 4'h4, 4'hC, 4'hF, 4'h0, 4'h0, 4'h1, 4'h0,
-        4'h0, 4'h0, 4'hF, 4'h5, 4'h1, 4'h6, 4'h2, 4'h6, 4'h3, 4'h6, 4'h4, 4'h6, 4'h5, 4'h6, 4'h6, 4'h6,
-        4'h7, 4'h6, 4'h8, 4'h6, 4'h9, 4'h6, 4'hA, 4'h6, 4'hB, 4'h6, 4'hC, 4'h6, 4'hD, 4'h6, 4'hE, 4'h6,
-        4'hF, 4'h6, 4'h0, 4'h7, 4'h1, 4'h7, 4'h2, 4'h7, 4'h3, 4'h7, 4'h4, 4'h7, 4'h5, 4'h7, 4'h6, 4'h7,
-        4'h7, 4'h7, 4'h1, 4'h6, 4'h2, 4'h6, 4'h3, 4'h6, 4'h4, 4'h6, 4'h5, 4'h6, 4'h6, 4'h6, 4'h7, 4'h6,
-        4'h8, 4'h6, 4'h9, 4'h6, 4'hF, 4'h3, 4'hD, 4'h0, 4'h3, 4'hF, 4'h8, 4'h1
+    bit[7 : 0] udp_packet[] = '{
+        8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
+        8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h08, 8'h00,
+        8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h00, 8'h45, 8'h00,
+        8'h00, 8'h2B, 8'h12, 8'h67, 8'h40, 8'h00, 8'h40, 8'h11,
+        8'hA4, 8'h80, 8'hC0, 8'hA8, 8'h01, 8'h0A, 8'hC0, 8'hA8,
+        8'h01, 8'h80, 8'hA8, 8'h8E, 8'h04, 8'hD2, 8'h00, 8'h17,
+        8'h8D, 8'h6C, 8'h48, 8'h65, 8'h6C, 8'h6C, 8'h6F, 8'h20,
+        8'h57, 8'h6F, 8'h72, 8'h64, 8'h20, 8'h29, 8'h29, 8'h29,
+        8'h0A, 8'h00, 8'h00, 8'h00, 8'hC2, 8'h22, 8'h06, 8'h87
     };
 
-    bit[3 : 0] icmp_linux_packet[] = '{
-        4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'h5, 4'hD,
-        4'h2, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h8, 4'h0, 4'h0, 4'h0,
-        4'h7, 4'h2, 4'h9, 4'hE, 4'hE, 4'h5, 4'h1, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'h5, 4'h4, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'h4, 4'h5, 4'h5, 4'h7, 4'hB, 4'hD, 4'h0, 4'h4, 4'h0, 4'h0, 4'h0, 4'h4, 4'h1, 4'h0,
-        4'h0, 4'h4, 4'h3, 4'hF, 4'h0, 4'hC, 4'h8, 4'hA, 4'h1, 4'h0, 4'hA, 4'h0, 4'h0, 4'hC, 4'h8, 4'hA,
-        4'h1, 4'h0, 4'h0, 4'h8, 4'h8, 4'h0, 4'h0, 4'h0, 4'hD, 4'h8, 4'hE, 4'h5, 4'h0, 4'h0, 4'h4, 4'h0,
-        4'h0, 4'h0, 4'h1, 4'h0, 4'h7, 4'h0, 4'hD, 4'h9, 4'h4, 4'h7, 4'h0, 4'h6, 4'h0, 4'h0, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'h0, 4'h0, 4'h2, 4'h2, 4'hC, 4'hC, 4'hD, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h0,
-        4'h0, 4'h0, 4'h0, 4'h0, 4'h0, 4'h1, 4'h1, 4'h1, 4'h2, 4'h1, 4'h3, 4'h1, 4'h4, 4'h1, 4'h5, 4'h1,
-        4'h6, 4'h1, 4'h7, 4'h1, 4'h8, 4'h1, 4'h9, 4'h1, 4'hA, 4'h1, 4'hB, 4'h1, 4'hC, 4'h1, 4'hD, 4'h1,
-        4'hE, 4'h1, 4'hF, 4'h1, 4'h0, 4'h2, 4'h1, 4'h2, 4'h2, 4'h2, 4'h3, 4'h2, 4'h4, 4'h2, 4'h5, 4'h2,
-        4'h6, 4'h2, 4'h7, 4'h2, 4'h8, 4'h2, 4'h9, 4'h2, 4'hA, 4'h2, 4'hB, 4'h2, 4'hC, 4'h2, 4'hD, 4'h2,
-        4'hE, 4'h2, 4'hF, 4'h2, 4'h0, 4'h3, 4'h1, 4'h3, 4'h2, 4'h3, 4'h3, 4'h3, 4'h4, 4'h3, 4'h5, 4'h3,
-        4'h6, 4'h3, 4'h7, 4'h3, 4'h5, 4'hE, 4'h5, 4'hF, 4'h5, 4'h0, 4'h6, 4'h1
+    bit[7 : 0] icmp_windows_packet[] = '{
+        8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
+        8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'hD0, 8'h37,
+        8'h45, 8'hB8, 8'h8F, 8'hCC, 8'h08, 8'h00, 8'h45, 8'h00,
+        8'h00, 8'h3C, 8'hE1, 8'hDA, 8'h00, 8'h00, 8'h80, 8'h01,
+        8'hD5, 8'h14, 8'hC0, 8'hA8, 8'h01, 8'h01, 8'hC0, 8'hA8,
+        8'h01, 8'h80, 8'h08, 8'h00, 8'h4C, 8'hFC, 8'h00, 8'h01,
+        8'h00, 8'h5F, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h66,
+        8'h67, 8'h68, 8'h69, 8'h6A, 8'h6B, 8'h6C, 8'h6D, 8'h6E,
+        8'h6F, 8'h70, 8'h71, 8'h72, 8'h73, 8'h74, 8'h75, 8'h76,
+        8'h77, 8'h61, 8'h62, 8'h63, 8'h64, 8'h65, 8'h66, 8'h67,
+        8'h68, 8'h69, 8'h3F, 8'h0D, 8'hF3, 8'h18
     };
+
+    bit[7 : 0] icmp_linux_packet[] = '{
+        8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
+        8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h08, 8'h00,
+        8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h00, 8'h45, 8'h00,
+        8'h00, 8'h54, 8'h75, 8'hDB, 8'h40, 8'h00, 8'h40, 8'h01,
+        8'h40, 8'hF3, 8'hC0, 8'hA8, 8'h01, 8'h0A, 8'hC0, 8'hA8,
+        8'h01, 8'h80, 8'h08, 8'h00, 8'h8D, 8'h5E, 8'h00, 8'h04,
+        8'h00, 8'h01, 8'h07, 8'h9D, 8'h74, 8'h60, 8'h00, 8'h00,
+        8'h00, 8'h00, 8'h22, 8'hCC, 8'h0D, 8'h00, 8'h00, 8'h00,
+        8'h00, 8'h00, 8'h10, 8'h11, 8'h12, 8'h13, 8'h14, 8'h15,
+        8'h16, 8'h17, 8'h18, 8'h19, 8'h1A, 8'h1B, 8'h1C, 8'h1D,
+        8'h1E, 8'h1F, 8'h20, 8'h21, 8'h22, 8'h23, 8'h24, 8'h25,
+        8'h26, 8'h27, 8'h28, 8'h29, 8'h2A, 8'h2B, 8'h2C, 8'h2D,
+        8'h2E, 8'h2F, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35,
+        8'h36, 8'h37, 8'hE5, 8'hF5, 8'h05, 8'h16
+    };
+
+    /// - Tsks && functions ------------------------------------------------------------------------
+
+    task mii_phy_tx;
+        input bit[1 : 0][3 : 0] i_data[];
+        input int i_data_size;
+
+        @(posedge eth_phy_clock);
+        phy_rx_dv = 1'b1;
+        for (int i = 0; i < i_data_size; ++i) begin
+            for (int j = 0; j < 2; ++j) begin
+                phy_rx_d = i_data[i][j];
+                @(posedge eth_phy_clock);
+            end
+        end
+        phy_rx_dv = 1'b0;
+        phy_rx_d = 0;
+
+    endtask
 
     /// - Logic description ------------------------------------------------------------------------
 
@@ -118,15 +152,18 @@ module verilog_ethernet_tb();
         while (!phy_reset_n) @(posedge eth_phy_clock);
         repeat (8) @(posedge eth_phy_clock);
 
-        // Sent ARP request
+        // Send ARP request
         repeat (3) begin
-            phy_rx_dv = 1'b1;
-            for (int i = 0; i < $size(arp_packet); ++i) begin
-                phy_rx_d = arp_packet[i];
-                @(posedge eth_phy_clock);
-            end
-            phy_rx_dv = 1'b0;
-            phy_rx_d = 0;
+            @(posedge eth_phy_clock) mii_phy_tx(arp_packet, $size(arp_packet));
+
+            while (!phy_tx_en) @(posedge eth_phy_clock);
+            while (phy_tx_en) @(posedge eth_phy_clock);
+            repeat (32) @(posedge eth_phy_clock);
+        end
+
+        // Send UDP packet
+        repeat (3) begin
+            @(posedge eth_phy_clock) mii_phy_tx(udp_packet, $size(udp_packet));
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
@@ -134,34 +171,29 @@ module verilog_ethernet_tb();
         end
 
         // Sent Windows ICMP request
+/*
         repeat (3) begin
-            phy_rx_dv = 1'b1;
-            for (int i = 0; i < $size(icmp_windows_packet); ++i) begin
-                phy_rx_d = icmp_windows_packet[i];
-                @(posedge eth_phy_clock);
-            end
-            phy_rx_dv = 1'b0;
-            phy_rx_d = 0;
+            @(posedge eth_phy_clock) mii_phy_tx(icmp_windows_packet, $size(icmp_windows_packet));
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
+*/
 
         // Sent Linux ICMP request
+/*
         repeat (3) begin
-            phy_rx_dv = 1'b1;
-            for (int i = 0; i < $size(icmp_linux_packet); ++i) begin
-                phy_rx_d = icmp_linux_packet[i];
-                @(posedge eth_phy_clock);
-            end
-            phy_rx_dv = 1'b0;
-            phy_rx_d = 0;
+            @(posedge eth_phy_clock) mii_phy_tx(icmp_linux_packet, $size(icmp_linux_packet));
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
+*/
+
+        repeat (128) @(posedge eth_phy_clock);
+        $stop();
 
     end
 

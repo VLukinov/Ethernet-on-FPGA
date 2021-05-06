@@ -2,6 +2,7 @@ PRJ=verilog_ethernet_tb
 
 all:
 	vsim -do $(PRJ).do
+	# vsim -c -do $(PRJ).do
 
 clean:
 	if [ -d work ]; then vdel -lib work -all; fi;
