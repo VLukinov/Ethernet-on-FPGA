@@ -68,6 +68,7 @@ vsim -debugdb work.$prj_name_tb
 # add wave -window mii_100base_t_arria_v_soc_dev_kit sim:/mii_100base_t_arria_v_soc_dev_kit_i/*
 
 # add schematic -full sim:/verilog_ethernet_tb/mii_100base_t_arria_v_soc_dev_kit_i/fpga_core_i
+
 add wave -group "fpga_core_i" sim:/mii_100base_t_arria_v_soc_dev_kit_i/fpga_core_i/*
 add wave -group "eth_mac_1g_inst" sim:/mii_100base_t_arria_v_soc_dev_kit_i/fpga_core_i/eth_mac_inst/eth_mac_1g_mii_inst/eth_mac_1g_inst/*
 add wave -group "axis_gmii_rx_inst" sim:/mii_100base_t_arria_v_soc_dev_kit_i/fpga_core_i/eth_mac_inst/eth_mac_1g_mii_inst/eth_mac_1g_inst/axis_gmii_rx_inst/*

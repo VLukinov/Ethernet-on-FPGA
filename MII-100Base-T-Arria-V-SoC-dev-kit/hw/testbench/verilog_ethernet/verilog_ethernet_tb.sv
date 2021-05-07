@@ -52,6 +52,8 @@ module verilog_ethernet_tb();
     localparam time ETH_PHY_HALF_CLOCK_DELAY = (TIME_MULTIPLICATOR / ETH_PHY_CLOCK_FREQUENCY) / 2;
     localparam time ETH_PHY_CLOCK_DELAY = ETH_PHY_HALF_CLOCK_DELAY * 2;
 
+    localparam mac_address_t LOCAL_MAC_ADDRESS = 48'h08_00_27_E9_5E_81;
+
     /// - Internal logic ---------------------------------------------------------------------------
 
     bit clock;
@@ -66,7 +68,7 @@ module verilog_ethernet_tb();
     bit[3 : 0] phy_tx_d;
     bit phy_tx_en;
 
-    bit[7 : 0] arp_packet[] = '{
+    octet_t arp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'h08, 8'h00,
         8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h06, 8'h00, 8'h01,
@@ -78,7 +80,7 @@ module verilog_ethernet_tb();
         8'h00, 8'h00, 8'h00, 8'h00, 8'hE8, 8'hF1, 8'h6B, 8'hF3
     };
 
-    bit[7 : 0] udp_packet[] = '{
+    octet_t udp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h08, 8'h00,
         8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h00, 8'h45, 8'h00,
@@ -90,7 +92,7 @@ module verilog_ethernet_tb();
         8'h0A, 8'h00, 8'h00, 8'h00, 8'hC2, 8'h22, 8'h06, 8'h87
     };
 
-    bit[7 : 0] icmp_windows_packet[] = '{
+    octet_t icmp_windows_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'hD0, 8'h37,
         8'h45, 8'hB8, 8'h8F, 8'hCC, 8'h08, 8'h00, 8'h45, 8'h00,
@@ -104,7 +106,7 @@ module verilog_ethernet_tb();
         8'h68, 8'h69, 8'h3F, 8'h0D, 8'hF3, 8'h18
     };
 
-    bit[7 : 0] icmp_linux_packet[] = '{
+    octet_t icmp_linux_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'h02, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h08, 8'h00,
         8'h27, 8'hE9, 8'h5E, 8'h81, 8'h08, 8'h00, 8'h45, 8'h00,
@@ -120,6 +122,11 @@ module verilog_ethernet_tb();
         8'h2E, 8'h2F, 8'h30, 8'h31, 8'h32, 8'h33, 8'h34, 8'h35,
         8'h36, 8'h37, 8'hE5, 8'hF5, 8'h05, 8'h16
     };
+
+    mac_address_t dst_mac_address = 48'hFF_FF_FF_FF_FF_FF;  // For ARP packet MAC address
+    mac_address_t src_mac_address = LOCAL_MAC_ADDRESS;
+
+    octet_t ethernet_frame[$];
 
     /// - Tsks && functions ------------------------------------------------------------------------
 
@@ -152,15 +159,24 @@ module verilog_ethernet_tb();
         while (!phy_reset_n) @(posedge eth_phy_clock);
         repeat (8) @(posedge eth_phy_clock);
 
+        // Fill ethernet-frame payload (ARP packet) in to the buffer
+        for (int i = 0; i < arp_packet.size() - ETHERNET_FRAME_HEADER_SIZE - 4; ++i) begin
+            ethernet_frame.push_back(arp_packet[i + ETHERNET_FRAME_HEADER_SIZE]);
+        end
+
+        // Create ethernet frame for ARP request
+        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_ARP);
+
         // Send ARP request
         repeat (3) begin
-            @(posedge eth_phy_clock) mii_phy_tx(arp_packet, $size(arp_packet));
+            mii_phy_tx(ethernet_frame, ethernet_frame.size());
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
 
+/*
         // Send UDP packet
         repeat (3) begin
             @(posedge eth_phy_clock) mii_phy_tx(udp_packet, $size(udp_packet));
@@ -169,6 +185,7 @@ module verilog_ethernet_tb();
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
+*/
 
         // Sent Windows ICMP request
 /*
@@ -193,6 +210,7 @@ module verilog_ethernet_tb();
 */
 
         repeat (128) @(posedge eth_phy_clock);
+        $display("");
         $stop();
 
     end
