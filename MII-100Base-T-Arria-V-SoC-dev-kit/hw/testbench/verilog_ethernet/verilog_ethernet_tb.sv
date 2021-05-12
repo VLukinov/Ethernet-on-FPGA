@@ -52,7 +52,8 @@ module verilog_ethernet_tb();
     localparam time ETH_PHY_HALF_CLOCK_DELAY = (TIME_MULTIPLICATOR / ETH_PHY_CLOCK_FREQUENCY) / 2;
     localparam time ETH_PHY_CLOCK_DELAY = ETH_PHY_HALF_CLOCK_DELAY * 2;
 
-    localparam mac_address_t LOCAL_MAC_ADDRESS = 48'h08_00_27_E9_5E_81;
+    localparam mac_address_t LOCAL_MAC_ADDRESS = { 8'h08, 8'h00, 8'h27, 8'hE9, 8'h5E, 8'h81 };
+    localparam ip_address_t LOCAL_IP_ADDRESS = { 8'd192, 8'd168, 8'd1, 8'd10 };
 
     /// - Internal logic ---------------------------------------------------------------------------
 
@@ -68,6 +69,7 @@ module verilog_ethernet_tb();
     bit[3 : 0] phy_tx_d;
     bit phy_tx_en;
 
+/*
     octet_t arp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'h08, 8'h00,
@@ -79,6 +81,7 @@ module verilog_ethernet_tb();
         8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00,
         8'h00, 8'h00, 8'h00, 8'h00, 8'hE8, 8'hF1, 8'h6B, 8'hF3
     };
+*/
 
     octet_t udp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
@@ -123,8 +126,11 @@ module verilog_ethernet_tb();
         8'h36, 8'h37, 8'hE5, 8'hF5, 8'h05, 8'h16
     };
 
-    mac_address_t dst_mac_address = 48'hFF_FF_FF_FF_FF_FF;  // For ARP packet MAC address
     mac_address_t src_mac_address = LOCAL_MAC_ADDRESS;
+    mac_address_t src_ip_address = LOCAL_IP_ADDRESS;
+
+    mac_address_t dst_mac_address = { 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF };   // For ARP packet MAC address
+    mac_address_t dst_ip_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_IP;
 
     octet_t ethernet_frame[$];
 
@@ -132,11 +138,10 @@ module verilog_ethernet_tb();
 
     task mii_phy_tx;
         input bit[1 : 0][3 : 0] i_data[];
-        input int i_data_size;
 
         @(posedge eth_phy_clock);
         phy_rx_dv = 1'b1;
-        for (int i = 0; i < i_data_size; ++i) begin
+        foreach (i_data[i]) begin
             for (int j = 0; j < 2; ++j) begin
                 phy_rx_d = i_data[i][j];
                 @(posedge eth_phy_clock);
@@ -159,17 +164,13 @@ module verilog_ethernet_tb();
         while (!phy_reset_n) @(posedge eth_phy_clock);
         repeat (8) @(posedge eth_phy_clock);
 
-        // Fill ethernet-frame payload (ARP packet) in to the buffer
-        for (int i = 0; i < arp_packet.size() - ETHERNET_FRAME_HEADER_SIZE - 4; ++i) begin
-            ethernet_frame.push_back(arp_packet[i + ETHERNET_FRAME_HEADER_SIZE]);
-        end
-
         // Create ethernet frame for ARP request
+        arp_request_create(ethernet_frame, src_mac_address, src_ip_address, dst_ip_address);
         ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_ARP);
 
         // Send ARP request
         repeat (3) begin
-            mii_phy_tx(ethernet_frame, ethernet_frame.size());
+            mii_phy_tx(ethernet_frame);
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
