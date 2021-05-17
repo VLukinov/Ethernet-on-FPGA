@@ -133,6 +133,7 @@ module verilog_ethernet_tb();
     mac_address_t dst_ip_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_IP;
 
     octet_t ethernet_frame[$];
+    octet_t temp[$];
 
     /// - Tsks && functions ------------------------------------------------------------------------
 
@@ -177,19 +178,36 @@ module verilog_ethernet_tb();
             repeat (32) @(posedge eth_phy_clock);
         end
 
-/*
+        /* DEBUG */
+        temp = udp_packet;
+        ethernet_frame = temp[ETHERNET_FRAME_HEADER_SIZE + ETHERNET_IP4_PACKET_HEADER_SIZE : $ - (4 + 3)];
+        dst_mac_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_MAC;
+        /* DEBUG */
+
+        // Create ethernet frame for UDP packet
+        ip_packet_create(ethernet_frame, 16'h1267, ETHERNET_IP_UDP_ID, src_ip_address, dst_ip_address);
+        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_IP4);
+
         // Send UDP packet
         repeat (3) begin
-            @(posedge eth_phy_clock) mii_phy_tx(udp_packet, $size(udp_packet));
+            mii_phy_tx(ethernet_frame);
 
             while (!phy_tx_en) @(posedge eth_phy_clock);
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
-*/
 
-        // Sent Windows ICMP request
 /*
+        // Send UDP packet
+        repeat (3) begin
+            mii_phy_tx(udp_packet);
+
+            while (!phy_tx_en) @(posedge eth_phy_clock);
+            while (phy_tx_en) @(posedge eth_phy_clock);
+            repeat (32) @(posedge eth_phy_clock);
+        end
+
+        // Send Windows ICMP request
         repeat (3) begin
             @(posedge eth_phy_clock) mii_phy_tx(icmp_windows_packet, $size(icmp_windows_packet));
 
@@ -199,7 +217,7 @@ module verilog_ethernet_tb();
         end
 */
 
-        // Sent Linux ICMP request
+        // Send Linux ICMP request
 /*
         repeat (3) begin
             @(posedge eth_phy_clock) mii_phy_tx(icmp_linux_packet, $size(icmp_linux_packet));
