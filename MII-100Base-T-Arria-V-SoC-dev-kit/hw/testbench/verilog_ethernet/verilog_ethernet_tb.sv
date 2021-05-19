@@ -55,6 +55,9 @@ module verilog_ethernet_tb();
     localparam mac_address_t LOCAL_MAC_ADDRESS = { 8'h08, 8'h00, 8'h27, 8'hE9, 8'h5E, 8'h81 };
     localparam ip_address_t LOCAL_IP_ADDRESS = { 8'd192, 8'd168, 8'd1, 8'd10 };
 
+    localparam octet_t[1 : 0] UDP_SRC_PORT = 43150;
+    localparam octet_t[1 : 0] UDP_DST_PORT = 1234;
+
     /// - Internal logic ---------------------------------------------------------------------------
 
     bit clock;
@@ -69,7 +72,6 @@ module verilog_ethernet_tb();
     bit[3 : 0] phy_tx_d;
     bit phy_tx_en;
 
-/*
     octet_t arp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
         8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'h08, 8'h00,
@@ -81,7 +83,6 @@ module verilog_ethernet_tb();
         8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00, 8'h00,
         8'h00, 8'h00, 8'h00, 8'h00, 8'hE8, 8'hF1, 8'h6B, 8'hF3
     };
-*/
 
     octet_t udp_packet[] = '{
         8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'h55, 8'hD5,
@@ -128,9 +129,13 @@ module verilog_ethernet_tb();
 
     mac_address_t src_mac_address = LOCAL_MAC_ADDRESS;
     mac_address_t src_ip_address = LOCAL_IP_ADDRESS;
+    octet_t[1 : 0] udp_src_port = UDP_SRC_PORT;
 
     mac_address_t dst_mac_address = { 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF, 8'hFF };   // For ARP packet MAC address
     mac_address_t dst_ip_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_IP;
+    octet_t[1 : 0] udp_dst_port = UDP_DST_PORT;
+
+    octet_t[1 : 0] packet_id;
 
     octet_t ethernet_frame[$];
     octet_t temp[$];
@@ -178,13 +183,13 @@ module verilog_ethernet_tb();
             repeat (32) @(posedge eth_phy_clock);
         end
 
-        /* DEBUG */
+        // Copy UDP payload to ethernet frame buffer
         temp = udp_packet;
-        ethernet_frame = temp[ETHERNET_FRAME_HEADER_SIZE + ETHERNET_IP4_PACKET_HEADER_SIZE : $ - (4 + 3)];
+        ethernet_frame = temp[ETHERNET_FRAME_HEADER_SIZE + ETHERNET_IP4_PACKET_HEADER_SIZE + ETHERNET_UDP_PACKET_HEADER_SIZE : $ - (4 + 3)];
         dst_mac_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_MAC;
-        /* DEBUG */
 
         // Create ethernet frame for UDP packet
+        udp_packet_create(ethernet_frame, udp_src_port, udp_dst_port, src_ip_address, dst_ip_address);
         ip_packet_create(ethernet_frame, 16'h1267, ETHERNET_IP_UDP_ID, src_ip_address, dst_ip_address);
         ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_IP4);
 
@@ -198,16 +203,7 @@ module verilog_ethernet_tb();
         end
 
 /*
-        // Send UDP packet
-        repeat (3) begin
-            mii_phy_tx(udp_packet);
-
-            while (!phy_tx_en) @(posedge eth_phy_clock);
-            while (phy_tx_en) @(posedge eth_phy_clock);
-            repeat (32) @(posedge eth_phy_clock);
-        end
-
-        // Send Windows ICMP request
+        // Send Windows ICMP request - ping
         repeat (3) begin
             @(posedge eth_phy_clock) mii_phy_tx(icmp_windows_packet, $size(icmp_windows_packet));
 
@@ -215,10 +211,8 @@ module verilog_ethernet_tb();
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
-*/
 
-        // Send Linux ICMP request
-/*
+        // Send Linux ICMP request - ping
         repeat (3) begin
             @(posedge eth_phy_clock) mii_phy_tx(icmp_linux_packet, $size(icmp_linux_packet));
 

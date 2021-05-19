@@ -2,7 +2,7 @@
  *  File:               verilog_ethernet_pack.sv
  *  Package:            verilog_ethernet_pack
  *  Start design:       6.05.2021
- *  Last revision:      12.05.2021
+ *  Last revision:      18.05.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  Package for verilog-ethernet functions
@@ -22,6 +22,9 @@
  *  History:
  *      6.05.2021               Create first versions of package: "verilog_ethernet_pack" - (Vadim A. Lukinov)
  *      12.05.2021              Implement "ethernet_frame_create" && "arp_request_create" functions - (Vadim A. Lukinov)
+ *      13.05.2021              Implement "ethernet_frame_create" && "arp_request_create" functions - (Vadim A. Lukinov)
+ *      17.05.2021              Implement "ip_packet_create" function - (Vadim A. Lukinov)
+ *      18.05.2021              Implement "udp_packet_create" function - (Vadim A. Lukinov)
  *
  */
 `ifndef VERILOG_ETHERNET_PACK_SV_
@@ -71,7 +74,7 @@ package verilog_ethernet_pack;
         ip_address_t dst_ip_address;                                // Destination IP address
         ip_address_t src_ip_address;                                // Source IP address
         octet_t[1 : 0] header_checksum;                             // IPv4 header checksum
-        octet_t protocol;                                           // Protocol type, or Protocol ID
+        octet_t protocol;                                           // Protocol type, or protocol number
         octet_t ttl;                                                // Time To Live (TTL)
         bit[12 : 0] fragment_offset;                                // Fragment Offset
         bit[2 : 0] flags;                                           // Packet fragmentation flags
@@ -82,6 +85,26 @@ package verilog_ethernet_pack;
         nibble_t version;                                           // Version field. For IPv4, this is always equal to 0x4
     } ethernet_ip4_packet_header_t;
     localparam ETHERNET_IP4_PACKET_HEADER_SIZE = ($bits(ethernet_ip4_packet_header_t) / $bits(octet_t));
+
+    // Ethernet UDP packet header
+    typedef struct packed {
+        octet_t[1 : 0] checksum;                                    // UDP packet checksum
+        octet_t[1 : 0] length;                                      // This field specifies the length in bytes of the UDP header and UDP data
+        octet_t[1 : 0] dst_port;                                    // Destination port number
+        octet_t[1 : 0] src_port;                                    // Source port number
+    } ethernet_udp_packet_header_t;
+    localparam ETHERNET_UDP_PACKET_HEADER_SIZE = ($bits(ethernet_udp_packet_header_t) / $bits(octet_t));
+
+    // IPv4 UDP pseudo header
+    typedef struct packed {
+        ethernet_udp_packet_header_t udp_packet_header;
+        octet_t[1 : 0] udp_length;                                  // UDP packet length
+        octet_t protocol;                                           // Protocol type, or protocol number = 0x11 (UDP)
+        octet_t zeroes;                                             // = 0x00
+        ip_address_t dst_ip_address;                                // Destination IP address
+        ip_address_t src_ip_address;                                // Source IP address
+    } ethernet_udp_pseudo_header_t;
+    localparam ETHERNET_UDP_PSEUDO_HEADER_SIZE = ($bits(ethernet_udp_pseudo_header_t) / $bits(octet_t));
 
     localparam ETHERNET_FRAME_MIN_PAYLOAD_SIZE = 46;
     localparam ETHERNET_IP4_PACKET_MIN_SIZE = ETHERNET_IP4_PACKET_HEADER_SIZE;
@@ -105,14 +128,14 @@ package verilog_ethernet_pack;
     const octet_t ETHERNET_IP_UDP_ID = 8'h11;
 
     /**
-     *  function - "print_buf"
-     *  Prints the contents of the buffer / array in hexadecimal
+     *  function - "print_buf_x8"
+     *  Prints the contents of the buffer / array in 8-bit hexadecimal
      *
      *  Parameters:
      *      data - printed data array
      *
      */
-    function print_buf(input bit[7 : 0] data[], input int columns = 32);
+    function print_buf_x8(input bit[7 : 0] data[], input int columns = 32);
         int column;
         column = 0;
         foreach (data[i]) begin
@@ -122,7 +145,31 @@ package verilog_ethernet_pack;
                 column = 0;
             end
         end
-        if (column != columns) begin
+        if (column && column != columns) begin
+            $display("");
+        end
+    endfunction
+
+
+    /**
+     *  function - "print_buf_x16"
+     *  Prints the contents of the buffer / array in 16-bit hexadecimal
+     *
+     *  Parameters:
+     *      data - printed data array
+     *
+     */
+    function print_buf_x16(input bit[15 : 0] data[], input int columns = 32);
+        int column;
+        column = 0;
+        foreach (data[i]) begin
+            $write(" %04X", data[i]);
+            if (++column == columns) begin
+                $display("");
+                column = 0;
+            end
+        end
+        if (column && column != columns) begin
             $display("");
         end
     endfunction
@@ -392,18 +439,18 @@ package verilog_ethernet_pack;
         frame_header.header_checksum = 16'h0000;
         header = frame_header;
 
+        summ = 0;
         foreach (header[i]) begin
             summ += header[i];
-            summ[15 : 0] += summ[31 : 16];
-            summ &= 16'hFFFF;
         end
-        ip_packet_header_checksum = ~summ;
+        summ[15 : 0] += summ[31 : 16];
+        ip_packet_header_checksum = ~summ & 16'hFFFF;
     endfunction
 
 
     /**
      *  function - "ip_packet_create"
-     *  Create IPv4 packet - add ethernet ftame header && checksum to data buffer
+     *  Create IPv4 packet - add IPv4 packet header to data buffer
      *
      *  Parameters:
      *      data_buffer - ethernet frame data buffer with payload data
@@ -445,6 +492,86 @@ package verilog_ethernet_pack;
         end
 
     endfunction
+
+
+    /**
+     *  function - "udp_packet_checksum"
+     *  Calculate IPv4 UDP packet checksum
+     *
+     *  Parameters:
+     *
+     */
+    function octet_t[1 : 0] udp_packet_checksum(input ethernet_udp_packet_header_t udp_packet_header, input ip_address_t src_ip_address, input ip_address_t dst_ip_address, input octet_t data_buffer[$]);
+        ethernet_udp_pseudo_header_t udp_pseudo_header;
+        bit[ETHERNET_UDP_PSEUDO_HEADER_SIZE / 2 - 1 : 0][15 : 0] pseudo_header;
+        octet_t payload[$];
+        bit[15 : 0] data[$];
+        bit[31 : 0] summ;
+
+        udp_pseudo_header.udp_packet_header = udp_packet_header;
+        udp_pseudo_header.udp_packet_header.checksum = 16'h0000;
+        { <<octet_t{ udp_pseudo_header.src_ip_address } } = src_ip_address;
+        { <<octet_t{ udp_pseudo_header.dst_ip_address } } = dst_ip_address;
+        udp_pseudo_header.zeroes = 8'h00;
+        udp_pseudo_header.protocol = ETHERNET_IP_UDP_ID;
+        udp_pseudo_header.udp_length = udp_pseudo_header.udp_packet_header.length;
+
+        pseudo_header = udp_pseudo_header;
+        foreach (pseudo_header[i]) begin
+            data.push_front({ <<octet_t{ pseudo_header[i] } });
+        end
+
+        payload = data_buffer;
+        if (payload.size() & 1) begin
+            payload.push_back(0);
+        end
+
+        for (int i = 0; i < payload.size(); i += 2) begin
+            data.push_back( { payload[i], payload[i + 1] } );
+        end
+
+        summ = 0;
+        foreach (data[i]) begin
+            summ += data[i];
+        end
+        summ[15 : 0] += summ[31 : 16];
+        udp_packet_checksum = ~summ & 16'hFFFF;
+    endfunction
+
+
+    /**
+     *  function - "udp_packet_create"
+     *  Create IPv4 UDP packet - add IPv4 UDP packet header to data buffer
+     *
+     *  Parameters:
+     *      data_buffer - ethernet frame data buffer with payload data
+     *
+     */
+    function udp_packet_create(inout octet_t data_buffer[$], input octet_t[1 : 0] src_port, input octet_t[1 : 0] dst_port, input ip_address_t src_ip_address, input ip_address_t dst_ip_address);
+        ethernet_udp_packet_header_t packet_header;
+        octet_t[ETHERNET_UDP_PACKET_HEADER_SIZE - 1 : 0] header;
+
+        { <<octet_t{ packet_header.src_port } } = src_port;
+        { <<octet_t{ packet_header.dst_port } } = dst_port;
+        { <<octet_t{ packet_header.length } } = data_buffer.size() + ETHERNET_UDP_PACKET_HEADER_SIZE;
+        { <<octet_t{ packet_header.checksum } } = udp_packet_checksum(packet_header, src_ip_address, dst_ip_address, data_buffer);
+
+        $display("Create UDP packet:");
+        $display("\tSrc port: %d", src_port);
+        $display("\tDst port: %d", dst_port);
+        $write("\tPayload:");
+        print_buf_x8(data_buffer, data_buffer.size());
+
+        // Reassigning values from a packed structure to a packed array
+        header = packet_header;
+
+        // Filling the buffer with data
+        foreach (header[i]) begin
+            data_buffer.push_front(header[i]);
+        end
+
+    endfunction
+
 
 endpackage
 
