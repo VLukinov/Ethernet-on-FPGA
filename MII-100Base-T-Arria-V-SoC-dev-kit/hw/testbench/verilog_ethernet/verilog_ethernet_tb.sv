@@ -208,47 +208,27 @@ module verilog_ethernet_tb();
         mii_phy_rx(ethernet_frame); // Receive Ethernet frame (ARP reply)
 
         frame_type = ethernet_frame_parse(ethernet_frame);
-        case (frame_type)
-            ETHERNET_FRAME_TYPE_IP4: begin
-                $display("IPv4 frame...");
-            end
+        $display("Receive ethernet frame type: %04X", frame_type);
 
-            ETHERNET_FRAME_TYPE_ARP: begin
-                $display("ARP frame...");
-            end
-
-            default: $display("Unknown ethernet frame type...");
-        endcase
-
-/*
-        // Send ARP request
-        repeat (3) begin
-            mii_phy_tx(ethernet_frame);
-
-            while (!phy_tx_en) @(posedge eth_phy_clock);
-            while (phy_tx_en) @(posedge eth_phy_clock);
-            repeat (32) @(posedge eth_phy_clock);
+        if (frame_type == ETHERNET_FRAME_TYPE_ARP) begin
+            dst_mac_address = arp_reply_parse(ethernet_frame);
         end
 
         // Copy UDP payload to ethernet frame buffer
         temp = udp_packet;
         ethernet_frame = temp[ETHERNET_FRAME_HEADER_SIZE + ETHERNET_IP4_PACKET_HEADER_SIZE + ETHERNET_UDP_PACKET_HEADER_SIZE : $ - (4 + 3)];
-        dst_mac_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_MAC;
+        $display("");
 
         // Create ethernet frame for UDP packet
         udp_packet_create(ethernet_frame, udp_src_port, udp_dst_port, src_ip_address, dst_ip_address);
         ip_packet_create(ethernet_frame, 16'h1267, ETHERNET_IP_UDP_ID, src_ip_address, dst_ip_address);
         ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_FRAME_TYPE_IP4);
 
-        // Send UDP packet
-        repeat (3) begin
-            mii_phy_tx(ethernet_frame);
+        mii_phy_tx(ethernet_frame); // Send Ethernet frame - UDP
+        mii_phy_rx(ethernet_frame); // Receive Ethernet frame - UDP
 
-            while (!phy_tx_en) @(posedge eth_phy_clock);
-            while (phy_tx_en) @(posedge eth_phy_clock);
-            repeat (32) @(posedge eth_phy_clock);
-        end
-*/
+        frame_type = ethernet_frame_parse(ethernet_frame);
+        $display("Receive ethernet frame type: %04X", frame_type);
 
 /*
         // Send Windows ICMP request - ping

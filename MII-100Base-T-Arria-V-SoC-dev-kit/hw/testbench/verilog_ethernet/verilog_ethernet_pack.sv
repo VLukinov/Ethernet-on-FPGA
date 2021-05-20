@@ -2,7 +2,7 @@
  *  File:               verilog_ethernet_pack.sv
  *  Package:            verilog_ethernet_pack
  *  Start design:       6.05.2021
- *  Last revision:      18.05.2021
+ *  Last revision:      20.05.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  Package for verilog-ethernet functions
@@ -21,10 +21,10 @@
  *
  *  History:
  *      6.05.2021               Create first versions of package: "verilog_ethernet_pack" - (Vadim A. Lukinov)
- *      12.05.2021              Implement "ethernet_frame_create" && "arp_request_create" functions - (Vadim A. Lukinov)
  *      13.05.2021              Implement "ethernet_frame_create" && "arp_request_create" functions - (Vadim A. Lukinov)
  *      17.05.2021              Implement "ip_packet_create" function - (Vadim A. Lukinov)
  *      18.05.2021              Implement "udp_packet_create" function - (Vadim A. Lukinov)
+ *      20.05.2021              Implement "ethernet_frame_parse" && "arp_reply_parse" functions - (Vadim A. Lukinov)
  *
  */
 `ifndef VERILOG_ETHERNET_PACK_SV_
@@ -399,6 +399,8 @@ package verilog_ethernet_pack;
         ethernet_frame_header_t frame_header;
         octet_t[ETHERNET_FRAME_HEADER_SIZE - 1 : 0] header;
 
+        mac_address_t dst_mac_address;
+        mac_address_t src_mac_address;
         frame_type_t frame_type;
 
         fcs_buffer = data_buffer[ETHERNET_FRAME_PREAMBLE_OCTETS + 1 : $ - ($bits(fcs) / $bits(octet_t))];
@@ -431,12 +433,14 @@ package verilog_ethernet_pack;
         end
 
         { <<octet_t{ frame_type } } = frame_header.frame_type;
+        { <<octet_t{ dst_mac_address } } = frame_header.dst_mac_address;
+        { <<octet_t{ src_mac_address } } = frame_header.src_mac_address;
 
         $display("Receive ethernet frame:");
         $write("\tDst MAC address: ");
-        print_mac_address({ <<octet_t{ frame_header.dst_mac_address } });
+        print_mac_address(dst_mac_address);
         $write("\tSrc MAC address: ");
-        print_mac_address({ <<octet_t{ frame_header.src_mac_address } });
+        print_mac_address(src_mac_address);
         $display("\tFrame type: %04X", frame_type);
 
         ethernet_frame_parse = frame_type;
@@ -484,6 +488,50 @@ package verilog_ethernet_pack;
             data_buffer.push_front(packet[i]);
         end
 
+    endfunction
+
+
+    /**
+     *  function - "ethernet_frame_parse"
+     *  Parse received ARP reply
+     *
+     *  Return value:
+     *      Sender protocol address (SPA)
+     *
+     *  Parameters:
+     *      data_buffer - ethernet frame data buffer with payload data
+     *
+     */
+    function mac_address_t arp_reply_parse(inout octet_t data_buffer[$]);
+        ethernet_arp_packet_t arp_packet;
+        octet_t[ETHERNET_ARP_PACKET_SIZE - 1 : 0] packet;
+
+        mac_address_t src_mac_address;
+        mac_address_t dst_mac_address;
+        ip_address_t src_ip_address;
+        ip_address_t dst_ip_address;
+
+        for (int i = 0; i < ETHERNET_ARP_PACKET_SIZE; ++i) begin
+            packet[i] = data_buffer.pop_front();
+        end
+        arp_packet = packet;
+
+        { <<octet_t{ src_mac_address } } = arp_packet.src_mac_address;
+        { <<octet_t{ dst_mac_address } } = arp_packet.dst_mac_address;
+        { <<octet_t{ src_ip_address } } = arp_packet.src_ip_address;
+        { <<octet_t{ dst_ip_address } } = arp_packet.dst_ip_address;
+
+        $display("Receive ARP reply:");
+        $write("\tSrc MAC address: ");
+        print_mac_address(src_mac_address);
+        $write("\tSrc IP address: ");
+        print_ip_address(src_ip_address);
+        $write("\tDst MAC address: ");
+        print_mac_address(dst_mac_address);
+        $write("\tDst IP address: ");
+        print_ip_address(dst_ip_address);
+
+        arp_reply_parse = src_mac_address;
     endfunction
 
 
