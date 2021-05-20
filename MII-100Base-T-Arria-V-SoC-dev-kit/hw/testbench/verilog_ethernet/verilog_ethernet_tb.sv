@@ -52,6 +52,8 @@ module verilog_ethernet_tb();
     localparam time ETH_PHY_HALF_CLOCK_DELAY = (TIME_MULTIPLICATOR / ETH_PHY_CLOCK_FREQUENCY) / 2;
     localparam time ETH_PHY_CLOCK_DELAY = ETH_PHY_HALF_CLOCK_DELAY * 2;
 
+    localparam ETH_PHY_RX_TIMEOUT_TICKS = 100;
+
     localparam mac_address_t LOCAL_MAC_ADDRESS = { 8'h08, 8'h00, 8'h27, 8'hE9, 8'h5E, 8'h81 };
     localparam ip_address_t LOCAL_IP_ADDRESS = { 8'd192, 8'd168, 8'd1, 8'd10 };
 
@@ -140,10 +142,12 @@ module verilog_ethernet_tb();
     octet_t ethernet_frame[$];
     octet_t temp[$];
 
+    frame_type_t frame_type;
+
     /// - Tsks && functions ------------------------------------------------------------------------
 
     task mii_phy_tx;
-        input bit[1 : 0][3 : 0] i_data[];
+        input nibble_t[1 : 0] i_data[];
 
         @(posedge eth_phy_clock);
         phy_rx_dv = 1'b1;
@@ -158,13 +162,39 @@ module verilog_ethernet_tb();
 
     endtask
 
+    task mii_phy_rx;
+        output nibble_t[1 : 0] o_data[$];
+
+        int counter;
+        nibble_t[1 : 0] data;
+
+        counter = 0;
+        while (!phy_tx_en) @(posedge eth_phy_clock) begin
+            if (++counter > ETH_PHY_RX_TIMEOUT_TICKS) begin
+                $display("MII PHY Rx timeout...");
+                break;
+            end
+        end
+
+        counter = 0;
+        o_data = {};
+        while (phy_tx_en) begin
+            repeat (2) begin
+                data = { phy_tx_d, data[1] };
+                @(posedge eth_phy_clock);
+            end
+            o_data.push_back(data);
+        end
+    endtask
+
     /// - Logic description ------------------------------------------------------------------------
 
     // System Clock process
     initial forever #SYSTEM_HALF_CLOCK_DELAY clock = ~clock;
     initial forever #ETH_PHY_HALF_CLOCK_DELAY eth_phy_clock = ~eth_phy_clock;
-    initial begin
 
+    // MII PHY clock process
+    initial begin
         @(posedge eth_phy_clock);
         while (phy_reset_n) @(posedge eth_phy_clock);
         while (!phy_reset_n) @(posedge eth_phy_clock);
@@ -172,8 +202,25 @@ module verilog_ethernet_tb();
 
         // Create ethernet frame for ARP request
         arp_request_create(ethernet_frame, src_mac_address, src_ip_address, dst_ip_address);
-        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_ARP);
+        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_FRAME_TYPE_ARP);
 
+        mii_phy_tx(ethernet_frame); // Send Ethernet frame (ARP request)
+        mii_phy_rx(ethernet_frame); // Receive Ethernet frame (ARP reply)
+
+        frame_type = ethernet_frame_parse(ethernet_frame);
+        case (frame_type)
+            ETHERNET_FRAME_TYPE_IP4: begin
+                $display("IPv4 frame...");
+            end
+
+            ETHERNET_FRAME_TYPE_ARP: begin
+                $display("ARP frame...");
+            end
+
+            default: $display("Unknown ethernet frame type...");
+        endcase
+
+/*
         // Send ARP request
         repeat (3) begin
             mii_phy_tx(ethernet_frame);
@@ -191,7 +238,7 @@ module verilog_ethernet_tb();
         // Create ethernet frame for UDP packet
         udp_packet_create(ethernet_frame, udp_src_port, udp_dst_port, src_ip_address, dst_ip_address);
         ip_packet_create(ethernet_frame, 16'h1267, ETHERNET_IP_UDP_ID, src_ip_address, dst_ip_address);
-        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_TYPE_IP4);
+        ethernet_frame_create(ethernet_frame, dst_mac_address, src_mac_address, ETHERNET_FRAME_TYPE_IP4);
 
         // Send UDP packet
         repeat (3) begin
@@ -201,6 +248,7 @@ module verilog_ethernet_tb();
             while (phy_tx_en) @(posedge eth_phy_clock);
             repeat (32) @(posedge eth_phy_clock);
         end
+*/
 
 /*
         // Send Windows ICMP request - ping

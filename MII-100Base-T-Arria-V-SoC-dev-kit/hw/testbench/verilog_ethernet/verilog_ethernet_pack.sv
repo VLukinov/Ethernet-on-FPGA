@@ -40,13 +40,13 @@ package verilog_ethernet_pack;
     typedef octet_t[3 : 0] ip_address_t;
 
     // Ethernet frame header
-    localparam ETHERNET_PREAMBLE_OCTETS = 7;
+    localparam ETHERNET_FRAME_PREAMBLE_OCTETS = 7;
     typedef struct packed {
         frame_type_t frame_type;                                    // Ethernet frame type (IPv4 - 0x0800, ARP - 0x0806)
         mac_address_t src_mac_address;                              // MAC source
         mac_address_t dst_mac_address;                              // MAC destination
         octet_t sfd;                                                // Start frame delimiter (SFD) - 0xD5
-        octet_t[ETHERNET_PREAMBLE_OCTETS - 1 : 0] preamble;         // Preamble - 0x55, 7 octets
+        octet_t[ETHERNET_FRAME_PREAMBLE_OCTETS - 1 : 0] preamble;   // Preamble - 0x55, 7 octets
     } ethernet_frame_header_t;
     localparam ETHERNET_FRAME_HEADER_SIZE = ($bits(ethernet_frame_header_t) / $bits(octet_t));
 
@@ -109,11 +109,11 @@ package verilog_ethernet_pack;
     localparam ETHERNET_FRAME_MIN_PAYLOAD_SIZE = 46;
     localparam ETHERNET_IP4_PACKET_MIN_SIZE = ETHERNET_IP4_PACKET_HEADER_SIZE;
 
-    const octet_t ETHERNET_PREAMBLE = 8'h55;                        // Ethernet frame preamble - 7 octets (0x55)
-    const octet_t ETHERNET_SFD = 8'hD5;                             // Ethernet frame "Start frame delimiter" (SFD)
+    const octet_t ETHERNET_FRAME_PREAMBLE = 8'h55;                  // Ethernet frame preamble - 7 octets (0x55)
+    const octet_t ETHERNET_FRAME_SFD = 8'hD5;                       // Ethernet frame "Start frame delimiter" (SFD)
 
-    const octet_t[1 : 0] ETHERNET_TYPE_IP4 = 16'h0800;              // Internet protocol v4
-    const octet_t[1 : 0] ETHERNET_TYPE_ARP = 16'h0806;              // Address resolution protocol (ARP)
+    const octet_t[1 : 0] ETHERNET_FRAME_TYPE_IP4 = 16'h0800;        // Internet protocol v4
+    const octet_t[1 : 0] ETHERNET_FRAME_TYPE_ARP = 16'h0806;        // Address resolution protocol (ARP)
     const octet_t[1 : 0] ETHERNET_LINK_PROTOCOL_TYPE = 16'h0001;    // Ethernet link protocol type for ARP HTYPE
 
     const nibble_t ETHERNET_IP_VERSION = 4'h4;                      // Ethernet IP packet version
@@ -342,8 +342,8 @@ package verilog_ethernet_pack;
         octet_t[3 : 0] fcs;
 
         // Assigning the Required Values to the Packing Structure
-        frame_header.preamble = { ETHERNET_PREAMBLE_OCTETS{ ETHERNET_PREAMBLE } };
-        frame_header.sfd = ETHERNET_SFD;
+        frame_header.preamble = { ETHERNET_FRAME_PREAMBLE_OCTETS{ ETHERNET_FRAME_PREAMBLE } };
+        frame_header.sfd = ETHERNET_FRAME_SFD;
         { <<octet_t{ frame_header.dst_mac_address } } = dst_mac_address;    // Reversing byte ordering
         { <<octet_t{ frame_header.src_mac_address } } = src_mac_address;    // Reversing byte ordering
         { <<octet_t{ frame_header.frame_type } } = frame_type;              // Reversing byte ordering
@@ -371,11 +371,75 @@ package verilog_ethernet_pack;
         end
 
         // Calculate checksum
-        { <<octet_t{ fcs } } = ethernet_fcs(data_buffer[ETHERNET_PREAMBLE_OCTETS + 1 : data_buffer.size()]);
+        { <<octet_t{ fcs } } = ethernet_fcs(data_buffer[ETHERNET_FRAME_PREAMBLE_OCTETS + 1 : $]);
         foreach (fcs[i]) begin
             data_buffer.push_back(fcs[i]);
         end
 
+    endfunction
+
+
+    /**
+     *  function - "ethernet_frame_parse"
+     *  Parse received ethernet frame
+     *
+     *  Return value:
+     *      Ethernet frame type, if error return - 0
+     *
+     *  Parameters:
+     *      data_buffer - ethernet frame data buffer with payload data
+     *
+     */
+    function frame_type_t ethernet_frame_parse(inout octet_t data_buffer[$]);
+        int i;
+
+        octet_t[3 : 0] fcs;
+        octet_t fcs_buffer[$];
+
+        ethernet_frame_header_t frame_header;
+        octet_t[ETHERNET_FRAME_HEADER_SIZE - 1 : 0] header;
+
+        frame_type_t frame_type;
+
+        fcs_buffer = data_buffer[ETHERNET_FRAME_PREAMBLE_OCTETS + 1 : $ - ($bits(fcs) / $bits(octet_t))];
+
+        for (i = 0; i < ETHERNET_FRAME_HEADER_SIZE; ++i) begin
+            header[i] = data_buffer.pop_front();
+        end
+        frame_header = header;
+
+        if (frame_header.preamble != { ETHERNET_FRAME_PREAMBLE_OCTETS{ ETHERNET_FRAME_PREAMBLE } }) begin
+            $display("Rx ethernet frame preamble error...");
+            data_buffer = {};
+            return 0;
+        end
+
+        if (frame_header.sfd != ETHERNET_FRAME_SFD) begin
+            $display("Rx ethernet frame SFD error...");
+            data_buffer = {};
+            return 0;
+        end
+
+        foreach (fcs[i]) begin
+            fcs[i] = data_buffer.pop_back();
+        end
+
+        if (fcs != ethernet_fcs(fcs_buffer)) begin
+            $display("Rx ethernet frame FCS error...");
+            data_buffer = {};
+            return 0;
+        end
+
+        { <<octet_t{ frame_type } } = frame_header.frame_type;
+
+        $display("Receive ethernet frame:");
+        $write("\tDst MAC address: ");
+        print_mac_address({ <<octet_t{ frame_header.dst_mac_address } });
+        $write("\tSrc MAC address: ");
+        print_mac_address({ <<octet_t{ frame_header.src_mac_address } });
+        $display("\tFrame type: %04X", frame_type);
+
+        ethernet_frame_parse = frame_type;
     endfunction
 
 
@@ -395,7 +459,7 @@ package verilog_ethernet_pack;
         octet_t[ETHERNET_ARP_PACKET_SIZE - 1 : 0] packet;
 
         { <<octet_t{ arp_packet.h_type } } = ETHERNET_LINK_PROTOCOL_TYPE;
-        { <<octet_t{ arp_packet.p_type } } = ETHERNET_TYPE_IP4;
+        { <<octet_t{ arp_packet.p_type } } = ETHERNET_FRAME_TYPE_IP4;
         arp_packet.h_len = $bits(mac_address_t) / $bits(octet_t);
         arp_packet.p_len = $bits(ip_address_t) / $bits(octet_t);
         { <<octet_t{ arp_packet.operation } } = ARP_REQUEST;
@@ -499,6 +563,10 @@ package verilog_ethernet_pack;
      *  Calculate IPv4 UDP packet checksum
      *
      *  Parameters:
+     *      udp_packet_header - Ethernet UDP packet header
+     *      src_ip_address - source IP address
+     *      dst_ip_address - destination IP address
+     *      data_buffer - ethernet frame data buffer with payload data
      *
      */
     function octet_t[1 : 0] udp_packet_checksum(input ethernet_udp_packet_header_t udp_packet_header, input ip_address_t src_ip_address, input ip_address_t dst_ip_address, input octet_t data_buffer[$]);
@@ -545,6 +613,10 @@ package verilog_ethernet_pack;
      *
      *  Parameters:
      *      data_buffer - ethernet frame data buffer with payload data
+     *      src_port - Source port number
+     *      dst_port - Destination port number
+     *      src_ip_address - source IP address
+     *      dst_ip_address - destination IP address
      *
      */
     function udp_packet_create(inout octet_t data_buffer[$], input octet_t[1 : 0] src_port, input octet_t[1 : 0] dst_port, input ip_address_t src_ip_address, input ip_address_t dst_ip_address);
