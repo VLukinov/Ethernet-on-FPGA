@@ -137,6 +137,7 @@ module verilog_ethernet_tb();
     mac_address_t dst_ip_address = mii_100base_t_arria_v_soc_dev_kit_i.LOCAL_IP;
     octet_t[1 : 0] udp_dst_port = UDP_DST_PORT;
 
+    octet_t protocol_id;
     octet_t[1 : 0] packet_id;
 
     octet_t ethernet_frame[$];
@@ -213,11 +214,11 @@ module verilog_ethernet_tb();
         if (frame_type == ETHERNET_FRAME_TYPE_ARP) begin
             dst_mac_address = arp_reply_parse(ethernet_frame);
         end
+        $display("");
 
         // Copy UDP payload to ethernet frame buffer
         temp = udp_packet;
         ethernet_frame = temp[ETHERNET_FRAME_HEADER_SIZE + ETHERNET_IP4_PACKET_HEADER_SIZE + ETHERNET_UDP_PACKET_HEADER_SIZE : $ - (4 + 3)];
-        $display("");
 
         // Create ethernet frame for UDP packet
         udp_packet_create(ethernet_frame, udp_src_port, udp_dst_port, src_ip_address, dst_ip_address);
@@ -230,25 +231,22 @@ module verilog_ethernet_tb();
         frame_type = ethernet_frame_parse(ethernet_frame);
         $display("Receive ethernet frame type: %04X", frame_type);
 
-/*
-        // Send Windows ICMP request - ping
-        repeat (3) begin
-            @(posedge eth_phy_clock) mii_phy_tx(icmp_windows_packet, $size(icmp_windows_packet));
-
-            while (!phy_tx_en) @(posedge eth_phy_clock);
-            while (phy_tx_en) @(posedge eth_phy_clock);
-            repeat (32) @(posedge eth_phy_clock);
+        if (frame_type == ETHERNET_FRAME_TYPE_IP4) begin
+            protocol_id = ip_packet_parse(ethernet_frame);
+            $display("Receive IPv4 protocol ID: %04X", protocol_id);
+            if (protocol_id == ETHERNET_IP_UDP_ID) begin
+                udp_packet_parse(ethernet_frame);
+                $write("Payload:");
+                print_buf_x8(ethernet_frame, ethernet_frame.size());
+            end
         end
+        $display("");
 
-        // Send Linux ICMP request - ping
-        repeat (3) begin
-            @(posedge eth_phy_clock) mii_phy_tx(icmp_linux_packet, $size(icmp_linux_packet));
+        mii_phy_tx(icmp_windows_packet);    // Send Ethernet frame - ICMP Echo reply
+        mii_phy_rx(ethernet_frame);         // Receive Ethernet frame - ICMP Echo reply
 
-            while (!phy_tx_en) @(posedge eth_phy_clock);
-            while (phy_tx_en) @(posedge eth_phy_clock);
-            repeat (32) @(posedge eth_phy_clock);
-        end
-*/
+        mii_phy_tx(icmp_linux_packet);      // Send Ethernet frame - ICMP Echo reply
+        mii_phy_rx(ethernet_frame);         // Receive Ethernet frame - ICMP Echo reply
 
         repeat (128) @(posedge eth_phy_clock);
         $display("");

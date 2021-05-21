@@ -403,6 +403,8 @@ package verilog_ethernet_pack;
         mac_address_t src_mac_address;
         frame_type_t frame_type;
 
+        $write("Receive ethernet frame: ");
+
         fcs_buffer = data_buffer[ETHERNET_FRAME_PREAMBLE_OCTETS + 1 : $ - ($bits(fcs) / $bits(octet_t))];
 
         for (i = 0; i < ETHERNET_FRAME_HEADER_SIZE; ++i) begin
@@ -411,13 +413,13 @@ package verilog_ethernet_pack;
         frame_header = header;
 
         if (frame_header.preamble != { ETHERNET_FRAME_PREAMBLE_OCTETS{ ETHERNET_FRAME_PREAMBLE } }) begin
-            $display("Rx ethernet frame preamble error...");
+            $display("invalid preamble...");
             data_buffer = {};
             return 0;
         end
 
         if (frame_header.sfd != ETHERNET_FRAME_SFD) begin
-            $display("Rx ethernet frame SFD error...");
+            $display("invalid SFD...");
             data_buffer = {};
             return 0;
         end
@@ -427,7 +429,7 @@ package verilog_ethernet_pack;
         end
 
         if (fcs != ethernet_fcs(fcs_buffer)) begin
-            $display("Rx ethernet frame FCS error...");
+            $display("invalid FCS...");
             data_buffer = {};
             return 0;
         end
@@ -436,7 +438,7 @@ package verilog_ethernet_pack;
         { <<octet_t{ dst_mac_address } } = frame_header.dst_mac_address;
         { <<octet_t{ src_mac_address } } = frame_header.src_mac_address;
 
-        $display("Receive ethernet frame:");
+        $display("");
         $write("\tDst MAC address: ");
         print_mac_address(dst_mac_address);
         $write("\tSrc MAC address: ");
@@ -607,6 +609,56 @@ package verilog_ethernet_pack;
 
 
     /**
+     *  function - "ip_packet_parse"
+     *  Parse received IPv4 packet
+     *
+     *  Return value:
+     *      IP Protocol type (protocol number)
+     *
+     *  Parameters:
+     *      data_buffer - ethernet frame data buffer with payload data
+     *
+     */
+    function octet_t ip_packet_parse(inout octet_t data_buffer[$]);
+        ethernet_ip4_packet_header_t packet_header;
+        octet_t[ETHERNET_IP4_PACKET_HEADER_SIZE - 1 : 0] header;
+
+        octet_t protocol_id;
+        ip_address_t src_ip_address;
+        ip_address_t dst_ip_address;
+        octet_t[1 : 0] header_checksum;
+
+        $write("Receive IPv4 pacet: ");
+
+        protocol_id = 8'hFF;
+        for (int i = 0; i < ETHERNET_IP4_PACKET_HEADER_SIZE; ++i) begin
+            header[i] = data_buffer.pop_front();
+        end
+        packet_header = header;
+
+        header_checksum = packet_header.header_checksum;
+        packet_header.header_checksum = 0;
+        if (header_checksum != ip_packet_header_checksum(packet_header)) begin
+            $display("invalid header checksum...");
+            return 8'hFF;
+        end
+
+        { <<octet_t{ protocol_id } } = packet_header.protocol;
+        { <<octet_t{ src_ip_address } } = packet_header.src_ip_address;
+        { <<octet_t{ dst_ip_address } } = packet_header.dst_ip_address;
+
+        $display("");
+        $display("\tProtocol ID: %02X", protocol_id);
+        $write("\tSrc IP address: ");
+        print_ip_address(src_ip_address);
+        $write("\tDst IP address: ");
+        print_ip_address(dst_ip_address);
+
+        ip_packet_parse = protocol_id;
+    endfunction
+
+
+    /**
      *  function - "udp_packet_checksum"
      *  Calculate IPv4 UDP packet checksum
      *
@@ -689,6 +741,19 @@ package verilog_ethernet_pack;
         foreach (header[i]) begin
             data_buffer.push_front(header[i]);
         end
+
+    endfunction
+
+
+    /**
+     *  function - "udp_packet_parse"
+     *  Parse IPv4 UDP packet
+     *
+     *  Parameters:
+     *      data_buffer - ethernet frame data buffer with payload data
+     *
+     */
+    function udp_packet_parse(inout octet_t data_buffer[$]);
 
     endfunction
 
