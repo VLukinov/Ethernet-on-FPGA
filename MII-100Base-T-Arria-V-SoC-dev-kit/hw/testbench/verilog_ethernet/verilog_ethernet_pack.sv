@@ -2,7 +2,7 @@
  *  File:               verilog_ethernet_pack.sv
  *  Package:            verilog_ethernet_pack
  *  Start design:       6.05.2021
- *  Last revision:      20.05.2021
+ *  Last revision:      21.05.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  Package for verilog-ethernet functions
@@ -25,6 +25,7 @@
  *      17.05.2021              Implement "ip_packet_create" function - (Vadim A. Lukinov)
  *      18.05.2021              Implement "udp_packet_create" function - (Vadim A. Lukinov)
  *      20.05.2021              Implement "ethernet_frame_parse" && "arp_reply_parse" functions - (Vadim A. Lukinov)
+ *      21.05.2021              Implement "ip_packet_parse" && "udp_packet_parse" functions - (Vadim A. Lukinov)
  *
  */
 `ifndef VERILOG_ETHERNET_PACK_SV_
@@ -628,7 +629,7 @@ package verilog_ethernet_pack;
         ip_address_t dst_ip_address;
         octet_t[1 : 0] header_checksum;
 
-        $write("Receive IPv4 pacet: ");
+        $write("Receive IPv4 packet: ");
 
         protocol_id = 8'hFF;
         for (int i = 0; i < ETHERNET_IP4_PACKET_HEADER_SIZE; ++i) begin
@@ -754,6 +755,30 @@ package verilog_ethernet_pack;
      *
      */
     function udp_packet_parse(inout octet_t data_buffer[$]);
+        ethernet_udp_packet_header_t packet_header;
+        octet_t[ETHERNET_UDP_PACKET_HEADER_SIZE - 1 : 0] header;
+
+        octet_t[1 : 0] length;
+        octet_t[1 : 0] dst_port;
+        octet_t[1 : 0] src_port;
+
+        for (int i = 0; i < ETHERNET_UDP_PACKET_HEADER_SIZE; ++i) begin
+            header[i] = data_buffer.pop_front();
+        end
+        packet_header = header;
+
+        { <<octet_t{ length } } = packet_header.length;
+        { <<octet_t{ dst_port } } = packet_header.dst_port;
+        { <<octet_t{ src_port } } = packet_header.src_port;
+        length -= ETHERNET_UDP_PACKET_HEADER_SIZE;
+
+        repeat (data_buffer.size() - length) begin
+            data_buffer.pop_back();
+        end
+
+        $display("Receive UDP packet:");
+        $display("\tSrc port: %d", src_port);
+        $display("\tDst port: %d", dst_port);
 
     endfunction
 
