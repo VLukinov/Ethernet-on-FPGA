@@ -1,0 +1,178 @@
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_TOOL_NAME "altera_eth_tse"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_TOOL_VERSION "17.1"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_TOOL_ENV "mwpim"
+set_global_assignment -library "triple_speed_ethernet" -name MISC_FILE [file join $::quartus(qip_path) "triple_speed_ethernet.cmp"]
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_TARGETED_DEVICE_FAMILY "Cyclone IV GX"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_GENERATED_DEVICE_FAMILY "{Cyclone IV GX}"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_QSYS_MODE "UNKNOWN"
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_NAME "dHJpcGxlX3NwZWVkX2V0aGVybmV0"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_DISPLAY_NAME "VHJpcGxlLVNwZWVkIEV0aGVybmV0"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_AUTHOR "SW50ZWwgQ29ycG9yYXRpb24="
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_VERSION "MTcuMQ=="
+set_global_assignment -entity "triple_speed_ethernet" -library "triple_speed_ethernet" -name IP_COMPONENT_DESCRIPTION "SW50ZWwgVHJpcGxlIFNwZWVkIEV0aGVybmV0"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_NAME "dHJpcGxlX3NwZWVkX2V0aGVybmV0XzAwMDI="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_DISPLAY_NAME "VHJpcGxlLVNwZWVkIEV0aGVybmV0"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_AUTHOR "SW50ZWwgQ29ycG9yYXRpb24="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_VERSION "MTcuMQ=="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_DESCRIPTION "SW50ZWwgVHJpcGxlIFNwZWVkIEV0aGVybmV0"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZGV2aWNlRmFtaWx5TmFtZQ==::Q3ljbG9uZSBJViBHWA==::RGV2aWNlIEZhbWlseQ=="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX3BhZGRpbmc=::dHJ1ZQ==::ZW5hYmxlX3BhZGRpbmc="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX2xndGhfY2hlY2s=::dHJ1ZQ==::ZW5hYmxlX2xndGhfY2hlY2s="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "Z2JpdF9vbmx5::dHJ1ZQ==::Z2JpdF9vbmx5"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "bWJpdF9vbmx5::dHJ1ZQ==::bWJpdF9vbmx5"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "cmVkdWNlZF9jb250cm9s::ZmFsc2U=::cmVkdWNlZF9jb250cm9s"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "Y29yZV92ZXJzaW9u::NDM1Mw==::Y29yZV92ZXJzaW9u"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZGV2X3ZlcnNpb24=::NDM1Mw==::ZGV2X3ZlcnNpb24="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZWdfZmlmbw==::MjA0OA==::ZWdfZmlmbw=="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "aW5nX2ZpZm8=::MjA0OA==::aW5nX2ZpZm8="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "cmVkdWNlZF9pbnRlcmZhY2VfZW5h::ZmFsc2U=::cmVkdWNlZF9pbnRlcmZhY2VfZW5h"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "c3luY2hyb25pemVyX2RlcHRo::Mw==::c3luY2hyb25pemVyX2RlcHRo"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZGV2aWNlRmFtaWx5::U1RJTkdSQVk=::ZGV2aWNlRmFtaWx5"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "aXNVc2VNQUM=::ZmFsc2U=::aXNVc2VNQUM="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "aXNVc2VQQ1M=::dHJ1ZQ==::aXNVc2VQQ1M="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX2Nsa19zaGFyaW5n::ZmFsc2U=::ZW5hYmxlX2Nsa19zaGFyaW5n"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "Y29yZV92YXJpYXRpb24=::UENTX09OTFk=::Q29yZSB2YXJpYXRpb24="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "aWZHTUlJ::TUlJX0dNSUk=::SW50ZXJmYWNl"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX2VjYw==::ZmFsc2U=::RW5hYmxlIEVDQyBwcm90ZWN0aW9u"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "dHJhbnNjZWl2ZXJfdHlwZQ==::R1hC::VHJhbnNjZWl2ZXIgdHlwZQ=="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "cGh5X2lkZW50aWZpZXI=::MA==::UEhZIElEICgzMiBiaXQp"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX3NnbWlp::ZmFsc2U=::RW5hYmxlIFNHTUlJIGJyaWRnZQ=="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZXhwb3J0X3B3cmRu::ZmFsc2U=::RXhwb3J0IHRyYW5zY2VpdmVyIHBvd2VyZG93biBzaWduYWw="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "c3RhcnRpbmdfY2hhbm5lbF9udW1iZXI=::MA==::U3RhcnRpbmcgY2hhbm5lbCBudW1iZXI="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::RVA0Q0dYMTEwQ0YyM0M3::QXV0byBERVZJQ0U="
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::Nw==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_NAME "YWx0ZXJhX3RzZV9hbHRneGI="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_DISPLAY_NAME "YWx0ZXJhX2V0aF90c2VfYWx0Z3hi"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_INTERNAL "On"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_VERSION "MTcuMQ=="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZXhwb3J0X3B3cmRu::ZmFsc2U=::RXhwb3J0IHRyYW5zY2VpdmVyIHBvd2VyZG93biBzaWduYWw="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "REVWSUNFX0ZBTUlMWQ==::Q1lDTE9ORUlWR1g=::REVWSUNFX0ZBTUlMWQ=="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "U1RBUlRJTkdfQ0hBTk5FTF9OVU1CRVI=::MA==::U1RBUlRJTkdfQ0hBTk5FTF9OVU1CRVI="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "RU5BQkxFX0FMVF9SRUNPTkZJRw==::MQ==::RU5BQkxFX0FMVF9SRUNPTkZJRw=="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "RU5BQkxFX1NHTUlJ::MA==::RU5BQkxFX1NHTUlJ"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "UkVDT05GSUdfVE9HWEJfV0lEVEg=::NA==::UkVDT05GSUdfVE9HWEJfV0lEVEg="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "UkVDT05GSUdfRlJPTUdYQl9XSURUSA==::NQ==::UkVDT05GSUdfRlJPTUdYQl9XSURUSA=="
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBJViBHWA==::QXV0byBERVZJQ0VfRkFNSUxZ"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_NAME "YWx0ZXJhX2V0aF90c2VfcGNzX3BtYV9neGI="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_DISPLAY_NAME "YWx0ZXJhX2V0aF90c2VfcGNzX3BtYV9neGI="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_INTERNAL "On"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_VERSION "MTcuMQ=="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "REVWX1ZFUlNJT04=::NDM1Mw==::REVWX1ZFUlNJT04="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "REVWSUNFX0ZBTUlMWQ==::Q1lDTE9ORUlWR1g=::REVWSUNFX0ZBTUlMWQ=="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "U1lOQ0hST05JWkVSX0RFUFRI::Mw==::U1lOQ0hST05JWkVSX0RFUFRI"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "RU5BQkxFX0NMS19TSEFSSU5H::ZmFsc2U=::RU5BQkxFX0NMS19TSEFSSU5H"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "RU5BQkxFX1NHTUlJ::ZmFsc2U=::RU5BQkxFX1NHTUlJ"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "UEhZX0lERU5USUZJRVI=::MA==::UEhZX0lERU5USUZJRVI="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "Y29ubmVjdF90b19tYWM=::ZmFsc2U=::Q29ubmVjdCB0aGlzIFBDUyB0byBNQUM="
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX3VzZV9pbnRlcm5hbF9maWZv::dHJ1ZQ==::ZW5hYmxlX3VzZV9pbnRlcm5hbF9maWZv"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_COMPONENT_PARAMETER "ZW5hYmxlX2hkX2xvZ2lj::dHJ1ZQ==::ZW5hYmxlX2hkX2xvZ2lj"
+
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/triple_speed_ethernet_0002.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_altgxb.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_gxb_gige_inst.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_alt4gxb_gige.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_alt4gxb_gige_wo_rmfifo.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_altgx_civgx_gige.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_altgx_civgx_gige_wo_rmfifo.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_eth_tse_pcs_pma_gxb.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_align_sync.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_dec10b8b.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_dec_func.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_enc8b10b.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_autoneg.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_carrier_sense.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_clk_gen.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_sgmii_clk_div.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_sgmii_clk_enable.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_rx_encapsulation.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_tx_encapsulation.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_rx_encapsulation_strx_gx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_pcs_control.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_pcs_host_control.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_mdio_reg.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_mii_rx_if_pcs.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_mii_tx_if_pcs.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_rx_sync.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_sgmii_clk_cntl.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_colision_detect.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_rx_converter.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_rx_fifo_rd.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_rx_converter.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_sgmii.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_sgmii_strx_gx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_tx_converter.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_tx_converter.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_1000_base_x.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_1000_base_x_strx_gx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_pcs.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_pcs_strx_gx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_rx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_tx.v"]
+set_global_assignment -library "triple_speed_ethernet" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_reset_sequencer.sv"]
+set_global_assignment -library "triple_speed_ethernet" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_reset_ctrl_lego.sv"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_xcvr_resync.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_gxb_aligned_rxsync.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_eth_tse_std_synchronizer.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_eth_tse_std_synchronizer_bundle.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_eth_tse_ptp_std_synchronizer.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_false_path_marker.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_reset_synchronizer.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_clock_crosser.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_13.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_24.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_34.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_opt_1246.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_opt_14_44.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_a_fifo_opt_36_10.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_gray_cnt.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_sdpm_altsyncram.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_altsyncram_dpm_fifo.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_bin_cnt.v"]
+set_global_assignment -library "triple_speed_ethernet" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ph_calculator.sv"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_sdpm_gen.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x10.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x10.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x10_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x14.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x14.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x14_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x2.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x2.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x2_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x23.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x23.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x23_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x36.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x36.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x36_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x40.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x40.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x40_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_dec_x30.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x30.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_enc_x30_wrapper.v"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_ecc_status_crosser.v"]
+set_global_assignment -library "triple_speed_ethernet" -name SOURCE_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_1000_base_x.ocp"]
+set_global_assignment -library "triple_speed_ethernet" -name SOURCE_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_tse_top_1000_base_x_strx_gx.ocp"]
+set_global_assignment -library "triple_speed_ethernet" -name VERILOG_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_std_synchronizer_nocut.v"]
+set_global_assignment -library "triple_speed_ethernet" -name SDC_FILE [file join $::quartus(qip_path) "triple_speed_ethernet/altera_eth_tse_pcs_pma_gxb.sdc"]
+
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_TOOL_NAME "altera_eth_tse"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_TOOL_VERSION "17.1"
+set_global_assignment -entity "triple_speed_ethernet_0002" -library "triple_speed_ethernet" -name IP_TOOL_ENV "mwpim"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_TOOL_NAME "altera_eth_tse_altgxb"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_TOOL_VERSION "17.1"
+set_global_assignment -entity "altera_tse_altgxb" -library "triple_speed_ethernet" -name IP_TOOL_ENV "mwpim"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_TOOL_NAME "altera_eth_tse_pcs_pma_gxb"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_TOOL_VERSION "17.1"
+set_global_assignment -entity "altera_eth_tse_pcs_pma_gxb" -library "triple_speed_ethernet" -name IP_TOOL_ENV "mwpim"

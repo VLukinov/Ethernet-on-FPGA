@@ -1,0 +1,39 @@
+	component triple_speed_ethernet is
+		port (
+			ref_clk          : in  std_logic                     := 'X';             -- clk
+			gxb_cal_blk_clk  : in  std_logic                     := 'X';             -- clk
+			clk              : in  std_logic                     := 'X';             -- clk
+			reset            : in  std_logic                     := 'X';             -- reset
+			reg_addr         : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- address
+			reg_data_out     : out std_logic_vector(15 downto 0);                    -- readdata
+			reg_rd           : in  std_logic                     := 'X';             -- read
+			reg_data_in      : in  std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
+			reg_wr           : in  std_logic                     := 'X';             -- write
+			reg_busy         : out std_logic;                                        -- waitrequest
+			tx_clk           : out std_logic;                                        -- clk
+			rx_clk           : out std_logic;                                        -- clk
+			reset_tx_clk     : in  std_logic                     := 'X';             -- reset
+			reset_rx_clk     : in  std_logic                     := 'X';             -- reset
+			gmii_rx_dv       : out std_logic;                                        -- gmii_rx_dv
+			gmii_rx_d        : out std_logic_vector(7 downto 0);                     -- gmii_rx_d
+			gmii_rx_err      : out std_logic;                                        -- gmii_rx_err
+			gmii_tx_en       : in  std_logic                     := 'X';             -- gmii_tx_en
+			gmii_tx_d        : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- gmii_tx_d
+			gmii_tx_err      : in  std_logic                     := 'X';             -- gmii_tx_err
+			led_crs          : out std_logic;                                        -- crs
+			led_link         : out std_logic;                                        -- link
+			led_panel_link   : out std_logic;                                        -- panel_link
+			led_col          : out std_logic;                                        -- col
+			led_an           : out std_logic;                                        -- an
+			led_char_err     : out std_logic;                                        -- char_err
+			led_disp_err     : out std_logic;                                        -- disp_err
+			rx_recovclkout   : out std_logic;                                        -- rx_recovclkout
+			reconfig_clk     : in  std_logic                     := 'X';             -- reconfig_clk
+			reconfig_togxb   : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- reconfig_togxb
+			reconfig_fromgxb : out std_logic_vector(4 downto 0);                     -- reconfig_fromgxb
+			reconfig_busy    : in  std_logic                     := 'X';             -- reconfig_busy
+			txp              : out std_logic;                                        -- txp
+			rxp              : in  std_logic                     := 'X'              -- rxp
+		);
+	end component triple_speed_ethernet;
+

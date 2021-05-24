@@ -98,7 +98,7 @@ module mii_100base_t_arria_v_soc_dev_kit
     fpga_core #(
         .TARGET("ALTERA")
     ) fpga_core_i (
-        // Clock: 25MHz
+        // Clock: 125MHz
         .clk(ref_clock),
         // Synchronous reset
         .rst(reset),
