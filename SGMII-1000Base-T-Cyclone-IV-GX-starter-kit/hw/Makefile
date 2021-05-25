@@ -11,6 +11,7 @@ clean:
 	rm -f *.rpt
 	rm -f *.qws
 
+	rm -rf greybox_tmp
 	rm -rf incremental_db
 	rm -rf output_files
 	rm -rf db

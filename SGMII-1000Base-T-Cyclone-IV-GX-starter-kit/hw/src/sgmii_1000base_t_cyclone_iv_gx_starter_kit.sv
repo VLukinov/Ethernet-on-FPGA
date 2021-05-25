@@ -38,24 +38,83 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
     parameter FPGA_RESET_DELAY_US = 20000,
     parameter FPGA_RESET_DELAY_TICKS = (FPGA_REFERENCE_CLOCK_FREQUENCY / 1000000) * FPGA_RESET_DELAY_US
 )(
-    input logic i_ref_clock,
+    input logic i_clock,                                                                            // 50 MHz clock
+    input logic i_ref_clock,                                                                        // 125 MHz ethernet reference clock
+
+    output logic o_phy_reset_n,
+    input logic i_phy_rx_serial_data,
+    output logic o_phy_tx_serial_data,
 
     output logic[3 : 0] o_led
 );
     /// - Internal parameters & constants ----------------------------------------------------------
 
-
+    localparam FPGA_RESET_COUNTER_MODULE = FPGA_RESET_DELAY_TICKS;
+    localparam FPGA_RESET_COUNTER_WIDTH = $clog2(FPGA_RESET_COUNTER_MODULE);
 
     /// - Internal logic ---------------------------------------------------------------------------
 
+    logic clock;
     logic ref_clock;
+
+    bit reset;
+    bit reset_counter_en;
+    bit[FPGA_RESET_COUNTER_WIDTH - 1 : 0] reset_counter;
+
+    logic phy_reset_n;
+
+    logic tx_pcs_reset_syncronizer_async_reset_n;
+    logic tx_pcs_reset_syncronizer_sync_reset_n;
+
+    logic rx_pcs_reset_syncronizer_async_reset_n;
+    logic rx_pcs_reset_syncronizer_sync_reset_n;
+
+    logic triple_speed_ethernet_tx_clk;
+    logic triple_speed_ethernet_rx_clk;
+    logic triple_speed_ethernet_reset_tx_clk;
+    logic triple_speed_ethernet_reset_rx_clk;
+
+    logic triple_speed_ethernet_reg_rd;
+    logic triple_speed_ethernet_reg_wr;
+    logic triple_speed_ethernet_reconfig_clk;
+    logic triple_speed_ethernet_reconfig_busy;
+
+    logic phy_gmii_clk_en;
+    logic[7 : 0] phy_gmii_rxd;
+    logic phy_gmii_rx_dv;
+    logic phy_gmii_rx_er;
+    logic[7 : 0] phy_gmii_txd;
+    logic phy_gmii_tx_en;
+    logic phy_gmii_tx_er;
 
     logic[3 : 0] led;
     logic[3 : 0] led_n;
 
     /// - Logic description ------------------------------------------------------------------------
 
+    always_comb clock = i_clock;
     always_comb ref_clock = i_ref_clock;
+
+    always_ff @(posedge ref_clock) reset <= reset_counter_en;
+
+    always_comb reset_counter_en = reset_counter != FPGA_RESET_COUNTER_MODULE - 1;
+    always_ff @(posedge ref_clock) begin
+        if (reset_counter_en)
+            reset_counter <= reset_counter + 1'b1;
+    end
+
+    always_comb tx_pcs_reset_syncronizer_async_reset_n = ~reset;
+    always_comb rx_pcs_reset_syncronizer_async_reset_n = ~reset;
+
+    always_comb triple_speed_ethernet_reconfig_clk = 1'b0;
+    always_comb triple_speed_ethernet_reconfig_busy = 1'b0;
+    always_comb triple_speed_ethernet_reg_rd = 1'b0;
+    always_comb triple_speed_ethernet_reg_wr = 1'b0;
+
+    always_comb triple_speed_ethernet_reset_tx_clk = ~tx_pcs_reset_syncronizer_sync_reset_n;
+    always_comb triple_speed_ethernet_reset_rx_clk = ~rx_pcs_reset_syncronizer_sync_reset_n;
+
+    always_comb phy_gmii_clk_en = 1'b1;
 
     always_comb led[0] = 1'b0;
     always_comb led[1] = 1'b0;
@@ -65,9 +124,81 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
 
     /// - External modules -------------------------------------------------------------------------
 
+    // Tx PCS reset syncronizer
+    reset_syncronizer tx_pcs_reset_syncronizer_i (
+        .i_clock(triple_speed_ethernet_tx_clk),
+        .i_async_reset_n(tx_pcs_reset_syncronizer_async_reset_n),
+        .o_sync_reset_n(tx_pcs_reset_syncronizer_sync_reset_n)
+    );
 
+    // Rx PCS reset syncronizer
+    reset_syncronizer rx_pcs_reset_syncronizer_i (
+        .i_clock(triple_speed_ethernet_rx_clk),
+        .i_async_reset_n(rx_pcs_reset_syncronizer_async_reset_n),
+        .o_sync_reset_n(rx_pcs_reset_syncronizer_sync_reset_n)
+    );
+
+    // SGMII to GMII converter
+    triple_speed_ethernet sgmii_to_gmii_converter_i (
+        .ref_clk(ref_clock),
+        .gxb_cal_blk_clk(ref_clock),
+        .clk(ref_clock),
+        .reset(reset),
+        .reg_addr(),
+        .reg_data_out(),
+        .reg_rd(triple_speed_ethernet_reg_rd),
+        .reg_data_in(),
+        .reg_wr(triple_speed_ethernet_reg_wr),
+        .reg_busy(),
+        .tx_clk(triple_speed_ethernet_tx_clk),
+        .rx_clk(triple_speed_ethernet_rx_clk),
+        .reset_tx_clk(triple_speed_ethernet_reset_tx_clk),
+        .reset_rx_clk(triple_speed_ethernet_reset_rx_clk),
+        .gmii_rx_dv(phy_gmii_rx_dv),
+        .gmii_rx_d(phy_gmii_rxd),
+        .gmii_rx_err(phy_gmii_rx_er),
+        .gmii_tx_en(phy_gmii_tx_en),
+        .gmii_tx_d(phy_gmii_txd),
+        .gmii_tx_err(phy_gmii_tx_er),
+        .led_crs(),
+        .led_link(),
+        .led_panel_link(),
+        .led_col(),
+        .led_an(),
+        .led_char_err(),
+        .led_disp_err(),
+        .rx_recovclkout(),
+        .reconfig_clk(triple_speed_ethernet_reconfig_clk),
+        .reconfig_togxb(),
+        .reconfig_fromgxb(),
+        .reconfig_busy(triple_speed_ethernet_reconfig_busy),
+        .txp(o_phy_tx_serial_data),
+        .rxp(i_phy_rx_serial_data)
+    );
+
+    fpga_core fpga_core_i (
+        // Clock: 125MHz
+        .clk(ref_clock),
+        // Synchronous reset
+        .rst(reset),
+
+        // Ethernet PHY: 1000BASE-T GMII
+        .phy_gmii_clk(ref_clock),
+        .phy_gmii_rst(reset),
+        .phy_gmii_clk_en(phy_gmii_clk_en),
+        .phy_gmii_rxd(phy_gmii_rxd),
+        .phy_gmii_rx_dv(phy_gmii_rx_dv),
+        .phy_gmii_rx_er(phy_gmii_rx_er),
+        .phy_gmii_txd(phy_gmii_txd),
+        .phy_gmii_tx_en(phy_gmii_tx_en),
+        .phy_gmii_tx_er(phy_gmii_tx_er),
+        .phy_reset_n(phy_reset_n),
+        .phy_int_n()
+    );
 
     /// - Outputs ----------------------------------------------------------------------------------
+
+    always_comb o_phy_reset_n = phy_reset_n;
 
     always_comb o_led = led_n;
 
