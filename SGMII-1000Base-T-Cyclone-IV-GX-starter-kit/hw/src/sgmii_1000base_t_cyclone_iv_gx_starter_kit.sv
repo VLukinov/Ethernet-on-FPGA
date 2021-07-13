@@ -52,6 +52,12 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
     localparam FPGA_RESET_COUNTER_MODULE = FPGA_RESET_DELAY_TICKS;
     localparam FPGA_RESET_COUNTER_WIDTH = $clog2(FPGA_RESET_COUNTER_MODULE);
 
+    localparam bit[47 : 0] LOCAL_MAC =      48'h02_00_00_00_00_00;
+    localparam bit[31 : 0] LOCAL_IP =       { 8'd192, 8'd168, 8'd1,   8'd128 };
+    localparam bit[31 : 0] GATEWAY_IP =     { 8'd192, 8'd168, 8'd1,   8'd1 };
+    localparam bit[31 : 0] SUBNET_MASK =    { 8'd255, 8'd255, 8'd255, 8'd0 };
+    localparam bit[15 : 0] UDP_DEST_PORT =  16'd1234;
+
     /// - Internal logic ---------------------------------------------------------------------------
 
     logic clock;
@@ -87,6 +93,12 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
     logic phy_gmii_tx_en;
     logic phy_gmii_tx_er;
 
+    bit[47 : 0] local_mac;
+    bit[31 : 0] local_ip;
+    bit[31 : 0] gateway_ip;
+    bit[31 : 0] subnet_mask;
+    bit[15 : 0] udp_dest_port;
+
     logic[3 : 0] led;
     logic[3 : 0] led_n;
 
@@ -115,6 +127,12 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
     always_comb triple_speed_ethernet_reset_rx_clk = ~rx_pcs_reset_syncronizer_sync_reset_n;
 
     always_comb phy_gmii_clk_en = 1'b1;
+
+    always_comb local_mac = LOCAL_MAC;
+    always_comb local_ip = LOCAL_IP;
+    always_comb gateway_ip = GATEWAY_IP;
+    always_comb subnet_mask = SUBNET_MASK;
+    always_comb udp_dest_port = UDP_DEST_PORT;
 
     always_comb led[0] = 1'b0;
     always_comb led[1] = 1'b0;
@@ -181,6 +199,13 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
         .clk(ref_clock),
         // Synchronous reset
         .rst(reset),
+
+        // Ethernet configuration parameters
+        .local_mac(local_mac),
+        .local_ip(local_ip),
+        .gateway_ip(gateway_ip),
+        .subnet_mask(subnet_mask),
+        .udp_dest_port(udp_dest_port),
 
         // Ethernet PHY: 1000BASE-T GMII
         .phy_gmii_clk(ref_clock),
