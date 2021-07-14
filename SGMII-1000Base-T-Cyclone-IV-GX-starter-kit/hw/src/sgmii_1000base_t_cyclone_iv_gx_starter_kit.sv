@@ -2,7 +2,7 @@
  *  File:               sgmii_1000base_t_cyclone_iv_gx_starter_kit.sv
  *  Modules:            sgmii_1000base_t_cyclone_iv_gx_starter_kit
  *  Start design:       24.05.2021
- *  Last revision:      24.05.2021
+ *  Last revision:      14.07.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  SGMII 1000Base-T example of using the "verilog-ethernet" library on Cyclone IV GX starter-kit
