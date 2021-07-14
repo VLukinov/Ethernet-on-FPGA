@@ -39,6 +39,15 @@ module fpga_core
     input  wire       rst,
 
     /*
+     * Ethernet configuration parameters
+     */
+    input wire [47:0] local_mac,
+    input wire [31:0] local_ip,
+    input wire [31:0] gateway_ip,
+    input wire [31:0] subnet_mask,
+    input wire [15:0] udp_dest_port,
+
+    /*
      * Ethernet: 1000BASE-T SGMII
      */
     input  wire       phy_gmii_clk,
@@ -188,12 +197,6 @@ wire tx_fifo_udp_payload_axis_tready;
 wire tx_fifo_udp_payload_axis_tlast;
 wire tx_fifo_udp_payload_axis_tuser;
 
-// Configuration
-wire [47:0] local_mac   = 48'h02_00_00_00_00_00;
-wire [31:0] local_ip    = {8'd192, 8'd168, 8'd1,   8'd128};
-wire [31:0] gateway_ip  = {8'd192, 8'd168, 8'd1,   8'd1};
-wire [31:0] subnet_mask = {8'd255, 8'd255, 8'd255, 8'd0};
-
 // IP ports not used
 assign rx_ip_hdr_ready = 1;
 assign rx_ip_payload_axis_tready = 1;
@@ -212,7 +215,7 @@ assign tx_ip_payload_axis_tlast = 0;
 assign tx_ip_payload_axis_tuser = 0;
 
 // Loop back UDP
-wire match_cond = rx_udp_dest_port == 1234;
+wire match_cond = rx_udp_dest_port == udp_dest_port;
 wire no_match = !match_cond;
 
 reg match_cond_reg = 0;
