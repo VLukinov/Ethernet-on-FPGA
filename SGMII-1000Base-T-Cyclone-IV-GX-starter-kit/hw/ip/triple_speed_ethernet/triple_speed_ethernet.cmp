@@ -20,6 +20,20 @@
 			gmii_tx_en       : in  std_logic                     := 'X';             -- gmii_tx_en
 			gmii_tx_d        : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- gmii_tx_d
 			gmii_tx_err      : in  std_logic                     := 'X';             -- gmii_tx_err
+			tx_clkena        : out std_logic;                                        -- tx_clkena
+			rx_clkena        : out std_logic;                                        -- rx_clkena
+			mii_rx_dv        : out std_logic;                                        -- mii_rx_dv
+			mii_rx_d         : out std_logic_vector(3 downto 0);                     -- mii_rx_d
+			mii_rx_err       : out std_logic;                                        -- mii_rx_err
+			mii_tx_en        : in  std_logic                     := 'X';             -- mii_tx_en
+			mii_tx_d         : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- mii_tx_d
+			mii_tx_err       : in  std_logic                     := 'X';             -- mii_tx_err
+			mii_col          : out std_logic;                                        -- mii_col
+			mii_crs          : out std_logic;                                        -- mii_crs
+			set_10           : out std_logic;                                        -- set_10
+			set_1000         : out std_logic;                                        -- set_1000
+			set_100          : out std_logic;                                        -- set_100
+			hd_ena           : out std_logic;                                        -- hd_ena
 			led_crs          : out std_logic;                                        -- crs
 			led_link         : out std_logic;                                        -- link
 			led_panel_link   : out std_logic;                                        -- panel_link

@@ -27,6 +27,20 @@ module triple_speed_ethernet_0002 (
 		input  wire        gmii_tx_en,       //                              .gmii_tx_en
 		input  wire [7:0]  gmii_tx_d,        //                              .gmii_tx_d
 		input  wire        gmii_tx_err,      //                              .gmii_tx_err
+		output wire        tx_clkena,        //       clock_enable_connection.tx_clkena
+		output wire        rx_clkena,        //                              .rx_clkena
+		output wire        mii_rx_dv,        //                mii_connection.mii_rx_dv
+		output wire [3:0]  mii_rx_d,         //                              .mii_rx_d
+		output wire        mii_rx_err,       //                              .mii_rx_err
+		input  wire        mii_tx_en,        //                              .mii_tx_en
+		input  wire [3:0]  mii_tx_d,         //                              .mii_tx_d
+		input  wire        mii_tx_err,       //                              .mii_tx_err
+		output wire        mii_col,          //                              .mii_col
+		output wire        mii_crs,          //                              .mii_crs
+		output wire        set_10,           //       sgmii_status_connection.set_10
+		output wire        set_1000,         //                              .set_1000
+		output wire        set_100,          //                              .set_100
+		output wire        hd_ena,           //                              .hd_ena
 		output wire        led_crs,          //         status_led_connection.crs
 		output wire        led_link,         //                              .link
 		output wire        led_panel_link,   //                              .panel_link
@@ -72,7 +86,7 @@ module triple_speed_ethernet_0002 (
 		.DEVICE_FAMILY      ("CYCLONEIVGX"),
 		.SYNCHRONIZER_DEPTH (3),
 		.ENABLE_CLK_SHARING (0),
-		.ENABLE_SGMII       (0),
+		.ENABLE_SGMII       (1),
 		.PHY_IDENTIFIER     (0)
 	) i_tse_pcs_0 (
 		.gxb_pwrdn_in_to_pcs          (i_altgxb_0_gxb_pwrdn_in_to_pcs_export),           //           gxb_pwrdn_in_to_pcs.export
@@ -107,12 +121,26 @@ module triple_speed_ethernet_0002 (
 		.reg_wr                       (reg_wr),                                          //                              .write
 		.reg_busy                     (reg_busy),                                        //                              .waitrequest
 		.ref_clk                      (ref_clk),                                         //  pcs_ref_clk_clock_connection.clk
+		.tx_clkena                    (tx_clkena),                                       //       clock_enable_connection.tx_clkena
+		.rx_clkena                    (rx_clkena),                                       //                              .rx_clkena
 		.gmii_rx_dv                   (gmii_rx_dv),                                      //               gmii_connection.gmii_rx_dv
 		.gmii_rx_d                    (gmii_rx_d),                                       //                              .gmii_rx_d
 		.gmii_rx_err                  (gmii_rx_err),                                     //                              .gmii_rx_err
 		.gmii_tx_en                   (gmii_tx_en),                                      //                              .gmii_tx_en
 		.gmii_tx_d                    (gmii_tx_d),                                       //                              .gmii_tx_d
 		.gmii_tx_err                  (gmii_tx_err),                                     //                              .gmii_tx_err
+		.mii_rx_dv                    (mii_rx_dv),                                       //                mii_connection.mii_rx_dv
+		.mii_rx_d                     (mii_rx_d),                                        //                              .mii_rx_d
+		.mii_rx_err                   (mii_rx_err),                                      //                              .mii_rx_err
+		.mii_tx_en                    (mii_tx_en),                                       //                              .mii_tx_en
+		.mii_tx_d                     (mii_tx_d),                                        //                              .mii_tx_d
+		.mii_tx_err                   (mii_tx_err),                                      //                              .mii_tx_err
+		.mii_col                      (mii_col),                                         //                              .mii_col
+		.mii_crs                      (mii_crs),                                         //                              .mii_crs
+		.set_10                       (set_10),                                          //       sgmii_status_connection.set_10
+		.set_1000                     (set_1000),                                        //                              .set_1000
+		.set_100                      (set_100),                                         //                              .set_100
+		.hd_ena                       (hd_ena),                                          //                              .hd_ena
 		.tx_clk                       (tx_clk),                                          // pcs_transmit_clock_connection.clk
 		.rx_clk                       (rx_clk),                                          //  pcs_receive_clock_connection.clk
 		.reset_tx_clk                 (reset_tx_clk),                                    // pcs_transmit_reset_connection.reset
@@ -123,28 +151,14 @@ module triple_speed_ethernet_0002 (
 		.led_col                      (led_col),                                         //                              .export
 		.led_an                       (led_an),                                          //                              .export
 		.led_char_err                 (led_char_err),                                    //                              .export
-		.led_disp_err                 (led_disp_err),                                    //                              .export
-		.tx_clkena                    (),                                                //                   (terminated)
-		.rx_clkena                    (),                                                //                   (terminated)
-		.mii_rx_dv                    (),                                                //                   (terminated)
-		.mii_rx_d                     (),                                                //                   (terminated)
-		.mii_rx_err                   (),                                                //                   (terminated)
-		.mii_tx_en                    (1'b0),                                            //                   (terminated)
-		.mii_tx_d                     (4'b0000),                                         //                   (terminated)
-		.mii_tx_err                   (1'b0),                                            //                   (terminated)
-		.mii_col                      (),                                                //                   (terminated)
-		.mii_crs                      (),                                                //                   (terminated)
-		.set_10                       (),                                                //                   (terminated)
-		.set_1000                     (),                                                //                   (terminated)
-		.set_100                      (),                                                //                   (terminated)
-		.hd_ena                       ()                                                 //                   (terminated)
+		.led_disp_err                 (led_disp_err)                                     //                              .export
 	);
 
 	altera_tse_altgxb #(
 		.DEVICE_FAMILY           ("CYCLONEIVGX"),
 		.STARTING_CHANNEL_NUMBER (0),
 		.ENABLE_ALT_RECONFIG     (1),
-		.ENABLE_SGMII            (0),
+		.ENABLE_SGMII            (1),
 		.RECONFIG_TOGXB_WIDTH    (4),
 		.RECONFIG_FROMGXB_WIDTH  (5)
 	) i_altgxb_0 (
