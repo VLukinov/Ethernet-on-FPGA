@@ -98,6 +98,20 @@ module sfp_sgmii_1000base_t_arria10_som
     logic triple_speed_ethernet_reset_rx_clk;
     logic triple_speed_ethernet_reset_tx_clk;
 
+    logic phy_gmii_clk_en;
+    logic[7 : 0] phy_gmii_rxd;
+    logic phy_gmii_rx_dv;
+    logic phy_gmii_rx_er;
+    logic[7 : 0] phy_gmii_txd;
+    logic phy_gmii_tx_en;
+    logic phy_gmii_tx_er;
+
+    bit[47 : 0] local_mac;
+    bit[31 : 0] local_ip;
+    bit[31 : 0] gateway_ip;
+    bit[31 : 0] subnet_mask;
+    bit[15 : 0] udp_dest_port;
+
     /// - Logic description ------------------------------------------------------------------------
 
     always_comb clock = ref_clock;
@@ -116,6 +130,14 @@ module sfp_sgmii_1000base_t_arria10_som
 
     always_comb triple_speed_ethernet_reset_rx_clk = ~rx_pcs_reset_syncronizer_sync_reset_n;
     always_comb triple_speed_ethernet_reset_tx_clk = ~tx_pcs_reset_syncronizer_sync_reset_n;
+
+    always_comb phy_gmii_clk_en = 1'b1;
+
+    always_comb local_mac = LOCAL_MAC;
+    always_comb local_ip = LOCAL_IP;
+    always_comb gateway_ip = GATEWAY_IP;
+    always_comb subnet_mask = SUBNET_MASK;
+    always_comb udp_dest_port = UDP_DEST_PORT;
 
     /// - External modules -------------------------------------------------------------------------
 
@@ -169,12 +191,12 @@ module sfp_sgmii_1000base_t_arria10_som
         .reg_wr(),
         .reg_busy(),
         .clk(clock),
-        .gmii_rx_dv(),
-        .gmii_rx_d(),
-        .gmii_rx_err(),
-        .gmii_tx_en(),
-        .gmii_tx_d(),
-        .gmii_tx_err(),
+        .gmii_rx_dv(phy_gmii_rx_dv),
+        .gmii_rx_d(phy_gmii_rxd),
+        .gmii_rx_err(phy_gmii_rx_er),
+        .gmii_tx_en(phy_gmii_tx_en),
+        .gmii_tx_d(phy_gmii_txd),
+        .gmii_tx_err(phy_gmii_tx_er),
         .rx_clk(triple_speed_ethernet_rx_clk),
         .reset_rx_clk(triple_speed_ethernet_reset_rx_clk),
         .ref_clk(ref_clock),
@@ -219,6 +241,33 @@ module sfp_sgmii_1000base_t_arria10_som
         .hd_ena()
     );
 
+    // UDP FPGA core
+    fpga_core fpga_core_i (
+        // Clock: 125MHz
+        .clk(clock),
+        // Synchronous reset
+        .rst(reset),
+
+        // Ethernet configuration parameters
+        .local_mac(local_mac),
+        .local_ip(local_ip),
+        .gateway_ip(gateway_ip),
+        .subnet_mask(subnet_mask),
+        .udp_dest_port(udp_dest_port),
+
+        // Ethernet PHY: 1000BASE-T GMII
+        .phy_gmii_clk(clock),
+        .phy_gmii_rst(reset),
+        .phy_gmii_clk_en(phy_gmii_clk_en),
+        .phy_gmii_rxd(phy_gmii_rxd),
+        .phy_gmii_rx_dv(phy_gmii_rx_dv),
+        .phy_gmii_rx_er(phy_gmii_rx_er),
+        .phy_gmii_txd(phy_gmii_txd),
+        .phy_gmii_tx_en(phy_gmii_tx_en),
+        .phy_gmii_tx_er(phy_gmii_tx_er),
+        .phy_reset_n(phy_reset_n),
+        .phy_int_n()
+    );
 
     /// - Outputs ----------------------------------------------------------------------------------
 
