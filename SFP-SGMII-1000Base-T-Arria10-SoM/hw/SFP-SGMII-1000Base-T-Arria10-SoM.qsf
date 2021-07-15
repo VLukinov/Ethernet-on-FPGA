@@ -1,0 +1,165 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 2017  Intel Corporation. All rights reserved.
+# Your use of Intel Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Intel Program License 
+# Subscription Agreement, the Intel Quartus Prime License Agreement,
+# the Intel FPGA IP License Agreement, or other applicable license
+# agreement, including, without limitation, that your use is for
+# the sole purpose of programming logic devices manufactured by
+# Intel and sold by Intel or its authorized distributors.  Please
+# refer to the applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus Prime
+# Version 17.1.1 Internal Build 593 12/11/2017 SJ Standard Edition
+# Date created = 18:34:51  July 14, 2021
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		sfp_sgmii_1000base_t_arria10_som_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus Prime software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Arria 10"
+set_global_assignment -name DEVICE 10AS066H2F34I1SG
+set_global_assignment -name TOP_LEVEL_ENTITY sfp_sgmii_1000base_t_arria10_som
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 17.1.1
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "18:34:51  JULY 14, 2021"
+set_global_assignment -name LAST_QUARTUS_VERSION "17.1.1 Standard Edition"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+
+set_location_assignment PIN_M28 -to i_ref_clock
+set_location_assignment PIN_M27 -to "i_ref_clock(n)"
+set_instance_assignment -name IO_STANDARD LVDS -to i_ref_clock
+set_instance_assignment -name INPUT_TERMINATION DIFFERENTIAL -to i_ref_clock
+
+set_location_assignment PIN_C30 -to i_sfp_port0_rx_serial_data
+set_location_assignment PIN_C29 -to "i_sfp_port0_rx_serial_data(n)"
+set_instance_assignment -name IO_STANDARD "HIGH SPEED DIFFERENTIAL I/O" -to i_sfp_port0_rx_serial_data
+
+set_location_assignment PIN_B32 -to o_sfp_port0_tx_serial_data
+set_location_assignment PIN_B31 -to "o_sfp_port0_tx_serial_data(n)"
+set_instance_assignment -name IO_STANDARD "HIGH SPEED DIFFERENTIAL I/O" -to o_sfp_port0_tx_serial_data
+
+set_location_assignment PIN_AM17 -to o_sfp_port0_tx_disable
+
+set_instance_assignment -name XCVR_A10_RX_LINK LR -to i_sfp_port0_rx_serial_data
+set_instance_assignment -name XCVR_A10_TX_LINK LR -to o_sfp_port0_tx_serial_data
+
+set_global_assignment -name SDC_FILE "SFP-SGMII-1000Base-T-Arria10-SoM.sdc"
+
+set_global_assignment -name QSYS_FILE ip/triple_speed_ethernet/triple_speed_ethernet.qsys
+set_global_assignment -name QSYS_FILE ip/xcvr_reset_control/xcvr_reset_control.qsys
+set_global_assignment -name QSYS_FILE ip/xcvr_pll/xcvr_pll.qsys
+
+set_global_assignment -name SYSTEMVERILOG_FILE src/sfp_sgmii_1000base_t_arria10_som.sv
+set_global_assignment -name SYSTEMVERILOG_FILE src/reset_syncronizer.sv
+
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name USE_SIGNALTAP_FILE signal_tap/phy.stp
+set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id phy_rx
+set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|rx_clk" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[0]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[1]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[2]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[3]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[4]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[5]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[6]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[7]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_dv" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_err" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[0]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[1]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[2]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[3]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[4]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[5]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[6]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_d[7]" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_dv" -section_id phy_rx
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "triple_speed_ethernet:sgmii_to_gmii_converter_i|gmii_rx_err" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334528" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=16384" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to phy_rx|gnd -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=16384" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to phy_rx|vcc -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=10" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=10" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=10" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000" -section_id phy_rx
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=58" -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to phy_rx|vcc -section_id phy_rx
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to phy_rx|gnd -section_id phy_rx
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_FILE db/phy_auto_stripped.stp
