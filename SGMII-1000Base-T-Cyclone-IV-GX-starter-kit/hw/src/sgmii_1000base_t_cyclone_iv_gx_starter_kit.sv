@@ -2,7 +2,7 @@
  *  File:               sgmii_1000base_t_cyclone_iv_gx_starter_kit.sv
  *  Modules:            sgmii_1000base_t_cyclone_iv_gx_starter_kit
  *  Start design:       24.05.2021
- *  Last revision:      14.07.2021
+ *  Last revision:      24.05.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  SGMII 1000Base-T example of using the "verilog-ethernet" library on Cyclone IV GX starter-kit
@@ -178,6 +178,20 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
         .gmii_tx_en(phy_gmii_tx_en),
         .gmii_tx_d(phy_gmii_txd),
         .gmii_tx_err(phy_gmii_tx_er),
+        .tx_clkena(1'b1),
+        .rx_clkena(1'b1),
+        .mii_rx_dv(),
+        .mii_rx_d(),
+        .mii_rx_err(),
+        .mii_tx_en(),
+        .mii_tx_d(),
+        .mii_tx_err(),
+        .mii_col(),
+        .mii_crs(),
+        .set_10(),
+        .set_1000(),
+        .set_100(),
+        .hd_ena(),
         .led_crs(),
         .led_link(),
         .led_panel_link(),
@@ -194,6 +208,7 @@ module sgmii_1000base_t_cyclone_iv_gx_starter_kit
         .rxp(i_phy_rx_serial_data)
     );
 
+    // UDP FPGA core
     fpga_core fpga_core_i (
         // Clock: 125MHz
         .clk(ref_clock),

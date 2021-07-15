@@ -26,6 +26,20 @@ module triple_speed_ethernet (
 		input  wire        gmii_tx_en,       //                              .gmii_tx_en
 		input  wire [7:0]  gmii_tx_d,        //                              .gmii_tx_d
 		input  wire        gmii_tx_err,      //                              .gmii_tx_err
+		output wire        tx_clkena,        //       clock_enable_connection.tx_clkena
+		output wire        rx_clkena,        //                              .rx_clkena
+		output wire        mii_rx_dv,        //                mii_connection.mii_rx_dv
+		output wire [3:0]  mii_rx_d,         //                              .mii_rx_d
+		output wire        mii_rx_err,       //                              .mii_rx_err
+		input  wire        mii_tx_en,        //                              .mii_tx_en
+		input  wire [3:0]  mii_tx_d,         //                              .mii_tx_d
+		input  wire        mii_tx_err,       //                              .mii_tx_err
+		output wire        mii_col,          //                              .mii_col
+		output wire        mii_crs,          //                              .mii_crs
+		output wire        set_10,           //       sgmii_status_connection.set_10
+		output wire        set_1000,         //                              .set_1000
+		output wire        set_100,          //                              .set_100
+		output wire        hd_ena,           //                              .hd_ena
 		output wire        led_crs,          //         status_led_connection.crs
 		output wire        led_link,         //                              .link
 		output wire        led_panel_link,   //                              .panel_link
@@ -63,6 +77,20 @@ module triple_speed_ethernet (
 		.gmii_tx_en       (gmii_tx_en),       //                              .gmii_tx_en
 		.gmii_tx_d        (gmii_tx_d),        //                              .gmii_tx_d
 		.gmii_tx_err      (gmii_tx_err),      //                              .gmii_tx_err
+		.tx_clkena        (tx_clkena),        //       clock_enable_connection.tx_clkena
+		.rx_clkena        (rx_clkena),        //                              .rx_clkena
+		.mii_rx_dv        (mii_rx_dv),        //                mii_connection.mii_rx_dv
+		.mii_rx_d         (mii_rx_d),         //                              .mii_rx_d
+		.mii_rx_err       (mii_rx_err),       //                              .mii_rx_err
+		.mii_tx_en        (mii_tx_en),        //                              .mii_tx_en
+		.mii_tx_d         (mii_tx_d),         //                              .mii_tx_d
+		.mii_tx_err       (mii_tx_err),       //                              .mii_tx_err
+		.mii_col          (mii_col),          //                              .mii_col
+		.mii_crs          (mii_crs),          //                              .mii_crs
+		.set_10           (set_10),           //       sgmii_status_connection.set_10
+		.set_1000         (set_1000),         //                              .set_1000
+		.set_100          (set_100),          //                              .set_100
+		.hd_ena           (hd_ena),           //                              .hd_ena
 		.led_crs          (led_crs),          //         status_led_connection.crs
 		.led_link         (led_link),         //                              .link
 		.led_panel_link   (led_panel_link),   //                              .panel_link
@@ -132,7 +160,7 @@ endmodule
 // Retrieval info: 	<generic name="eg_addr" value="11" />
 // Retrieval info: 	<generic name="ing_addr" value="11" />
 // Retrieval info: 	<generic name="phy_identifier" value="0" />
-// Retrieval info: 	<generic name="enable_sgmii" value="false" />
+// Retrieval info: 	<generic name="enable_sgmii" value="true" />
 // Retrieval info: 	<generic name="export_pwrdn" value="false" />
 // Retrieval info: 	<generic name="enable_alt_reconfig" value="false" />
 // Retrieval info: 	<generic name="starting_channel_number" value="0" />
