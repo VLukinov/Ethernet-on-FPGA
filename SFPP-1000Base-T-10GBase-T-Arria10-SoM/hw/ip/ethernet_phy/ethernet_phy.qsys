@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags="INTERNAL_COMPONENT=true"
+   categories="" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element xcvr_10gkr_a10_0
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="10AS066H2F34I1SG" />
+ <parameter name="deviceFamily" value="Arria 10" />
+ <parameter name="deviceSpeedGrade" value="1" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="true" />
+ <parameter name="lockedInterfaceDefinition" value="" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName" value="" />
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface
+   name="gmii_rx_d"
+   internal="xcvr_10gkr_a10_0.gmii_rx_d"
+   type="conduit"
+   dir="end">
+  <port name="gmii_rx_d" internal="gmii_rx_d" />
+ </interface>
+ <interface
+   name="gmii_rx_dv"
+   internal="xcvr_10gkr_a10_0.gmii_rx_dv"
+   type="conduit"
+   dir="end">
+  <port name="gmii_rx_dv" internal="gmii_rx_dv" />
+ </interface>
+ <interface
+   name="gmii_rx_err"
+   internal="xcvr_10gkr_a10_0.gmii_rx_err"
+   type="conduit"
+   dir="end">
+  <port name="gmii_rx_err" internal="gmii_rx_err" />
+ </interface>
+ <interface
+   name="gmii_tx_d"
+   internal="xcvr_10gkr_a10_0.gmii_tx_d"
+   type="conduit"
+   dir="end">
+  <port name="gmii_tx_d" internal="gmii_tx_d" />
+ </interface>
+ <interface
+   name="gmii_tx_en"
+   internal="xcvr_10gkr_a10_0.gmii_tx_en"
+   type="conduit"
+   dir="end">
+  <port name="gmii_tx_en" internal="gmii_tx_en" />
+ </interface>
+ <interface
+   name="gmii_tx_err"
+   internal="xcvr_10gkr_a10_0.gmii_tx_err"
+   type="conduit"
+   dir="end">
+  <port name="gmii_tx_err" internal="gmii_tx_err" />
+ </interface>
+ <interface
+   name="led_an"
+   internal="xcvr_10gkr_a10_0.led_an"
+   type="conduit"
+   dir="end">
+  <port name="led_an" internal="led_an" />
+ </interface>
+ <interface
+   name="led_char_err"
+   internal="xcvr_10gkr_a10_0.led_char_err"
+   type="conduit"
+   dir="end">
+  <port name="led_char_err" internal="led_char_err" />
+ </interface>
+ <interface
+   name="led_disp_err"
+   internal="xcvr_10gkr_a10_0.led_disp_err"
+   type="conduit"
+   dir="end">
+  <port name="led_disp_err" internal="led_disp_err" />
+ </interface>
+ <interface
+   name="led_link"
+   internal="xcvr_10gkr_a10_0.led_link"
+   type="conduit"
+   dir="end">
+  <port name="led_link" internal="led_link" />
+ </interface>
+ <interface
+   name="mgmt_clk"
+   internal="xcvr_10gkr_a10_0.mgmt_clk"
+   type="clock"
+   dir="end">
+  <port name="mgmt_clk" internal="mgmt_clk" />
+ </interface>
+ <interface
+   name="mgmt_clk_reset"
+   internal="xcvr_10gkr_a10_0.mgmt_clk_reset"
+   type="reset"
+   dir="end">
+  <port name="mgmt_clk_reset" internal="mgmt_clk_reset" />
+ </interface>
+ <interface
+   name="phy_mgmt"
+   internal="xcvr_10gkr_a10_0.phy_mgmt"
+   type="avalon"
+   dir="end">
+  <port name="mgmt_address" internal="mgmt_address" />
+  <port name="mgmt_read" internal="mgmt_read" />
+  <port name="mgmt_readdata" internal="mgmt_readdata" />
+  <port name="mgmt_waitrequest" internal="mgmt_waitrequest" />
+  <port name="mgmt_write" internal="mgmt_write" />
+  <port name="mgmt_writedata" internal="mgmt_writedata" />
+ </interface>
+ <interface
+   name="rx_analogreset"
+   internal="xcvr_10gkr_a10_0.rx_analogreset"
+   type="conduit"
+   dir="end">
+  <port name="rx_analogreset" internal="rx_analogreset" />
+ </interface>
+ <interface
+   name="rx_block_lock"
+   internal="xcvr_10gkr_a10_0.rx_block_lock"
+   type="conduit"
+   dir="end">
+  <port name="rx_block_lock" internal="rx_block_lock" />
+ </interface>
+ <interface
+   name="rx_cal_busy"
+   internal="xcvr_10gkr_a10_0.rx_cal_busy"
+   type="conduit"
+   dir="end">
+  <port name="rx_cal_busy" internal="rx_cal_busy" />
+ </interface>
+ <interface
+   name="rx_cdr_ref_clk_10g"
+   internal="xcvr_10gkr_a10_0.rx_cdr_ref_clk_10g"
+   type="clock"
+   dir="end">
+  <port name="rx_cdr_ref_clk_10g" internal="rx_cdr_ref_clk_10g" />
+ </interface>
+ <interface
+   name="rx_cdr_ref_clk_1g"
+   internal="xcvr_10gkr_a10_0.rx_cdr_ref_clk_1g"
+   type="clock"
+   dir="end">
+  <port name="rx_cdr_ref_clk_1g" internal="rx_cdr_ref_clk_1g" />
+ </interface>
+ <interface
+   name="rx_clkslip"
+   internal="xcvr_10gkr_a10_0.rx_clkslip"
+   type="conduit"
+   dir="end">
+  <port name="rx_clkslip" internal="rx_clkslip" />
+ </interface>
+ <interface
+   name="rx_data_ready"
+   internal="xcvr_10gkr_a10_0.rx_data_ready"
+   type="conduit"
+   dir="end">
+  <port name="rx_data_ready" internal="rx_data_ready" />
+ </interface>
+ <interface
+   name="rx_digitalreset"
+   internal="xcvr_10gkr_a10_0.rx_digitalreset"
+   type="conduit"
+   dir="end">
+  <port name="rx_digitalreset" internal="rx_digitalreset" />
+ </interface>
+ <interface
+   name="rx_hi_ber"
+   internal="xcvr_10gkr_a10_0.rx_hi_ber"
+   type="conduit"
+   dir="end">
+  <port name="rx_hi_ber" internal="rx_hi_ber" />
+ </interface>
+ <interface
+   name="rx_is_lockedtodata"
+   internal="xcvr_10gkr_a10_0.rx_is_lockedtodata"
+   type="conduit"
+   dir="end">
+  <port name="rx_is_lockedtodata" internal="rx_is_lockedtodata" />
+ </interface>
+ <interface
+   name="rx_pcfifo_error_1g"
+   internal="xcvr_10gkr_a10_0.rx_pcfifo_error_1g"
+   type="conduit"
+   dir="end">
+  <port name="rx_pcfifo_error_1g" internal="rx_pcfifo_error_1g" />
+ </interface>
+ <interface
+   name="rx_serial_data"
+   internal="xcvr_10gkr_a10_0.rx_serial_data"
+   type="conduit"
+   dir="end">
+  <port name="rx_serial_data" internal="rx_serial_data" />
+ </interface>
+ <interface
+   name="rx_syncstatus"
+   internal="xcvr_10gkr_a10_0.rx_syncstatus"
+   type="conduit"
+   dir="end">
+  <port name="rx_syncstatus" internal="rx_syncstatus" />
+ </interface>
+ <interface
+   name="tx_analogreset"
+   internal="xcvr_10gkr_a10_0.tx_analogreset"
+   type="conduit"
+   dir="end">
+  <port name="tx_analogreset" internal="tx_analogreset" />
+ </interface>
+ <interface
+   name="tx_cal_busy"
+   internal="xcvr_10gkr_a10_0.tx_cal_busy"
+   type="conduit"
+   dir="end">
+  <port name="tx_cal_busy" internal="tx_cal_busy" />
+ </interface>
+ <interface
+   name="tx_clkout"
+   internal="xcvr_10gkr_a10_0.tx_clkout"
+   type="clock"
+   dir="start">
+  <port name="tx_clkout" internal="tx_clkout" />
+ </interface>
+ <interface
+   name="tx_digitalreset"
+   internal="xcvr_10gkr_a10_0.tx_digitalreset"
+   type="conduit"
+   dir="end">
+  <port name="tx_digitalreset" internal="tx_digitalreset" />
+ </interface>
+ <interface
+   name="tx_pcfifo_error_1g"
+   internal="xcvr_10gkr_a10_0.tx_pcfifo_error_1g"
+   type="conduit"
+   dir="end">
+  <port name="tx_pcfifo_error_1g" internal="tx_pcfifo_error_1g" />
+ </interface>
+ <interface
+   name="tx_serial_clk_10g"
+   internal="xcvr_10gkr_a10_0.tx_serial_clk_10g"
+   type="hssi_serial_clock"
+   dir="end">
+  <port name="tx_serial_clk_10g" internal="tx_serial_clk_10g" />
+ </interface>
+ <interface
+   name="tx_serial_clk_1g"
+   internal="xcvr_10gkr_a10_0.tx_serial_clk_1g"
+   type="hssi_serial_clock"
+   dir="end">
+  <port name="tx_serial_clk_1g" internal="tx_serial_clk_1g" />
+ </interface>
+ <interface
+   name="tx_serial_data"
+   internal="xcvr_10gkr_a10_0.tx_serial_data"
+   type="conduit"
+   dir="end">
+  <port name="tx_serial_data" internal="tx_serial_data" />
+ </interface>
+ <interface
+   name="usr_seq_reset"
+   internal="xcvr_10gkr_a10_0.usr_seq_reset"
+   type="conduit"
+   dir="end">
+  <port name="usr_seq_reset" internal="usr_seq_reset" />
+ </interface>
+ <interface
+   name="xgmii_rx_clk"
+   internal="xcvr_10gkr_a10_0.xgmii_rx_clk"
+   type="clock"
+   dir="end">
+  <port name="xgmii_rx_clk" internal="xgmii_rx_clk" />
+ </interface>
+ <interface
+   name="xgmii_rx_dc"
+   internal="xcvr_10gkr_a10_0.xgmii_rx_dc"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_rx_dc" internal="xgmii_rx_dc" />
+ </interface>
+ <interface
+   name="xgmii_tx_clk"
+   internal="xcvr_10gkr_a10_0.xgmii_tx_clk"
+   type="clock"
+   dir="end">
+  <port name="xgmii_tx_clk" internal="xgmii_tx_clk" />
+ </interface>
+ <interface
+   name="xgmii_tx_dc"
+   internal="xcvr_10gkr_a10_0.xgmii_tx_dc"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_tx_dc" internal="xgmii_tx_dc" />
+ </interface>
+ <module
+   name="xcvr_10gkr_a10_0"
+   kind="altera_xcvr_10gkr_a10"
+   version="17.1"
+   enabled="1"
+   autoexport="1">
+  <parameter name="AN_100G" value="0" />
+  <parameter name="AN_40GBP" value="0" />
+  <parameter name="AN_40GCR" value="0" />
+  <parameter name="AN_BASER" value="1" />
+  <parameter name="AN_FEC" value="0" />
+  <parameter name="AN_PAUSE_C0" value="1" />
+  <parameter name="AN_PAUSE_C1" value="1" />
+  <parameter name="AN_SELECTOR" value="1" />
+  <parameter name="AN_XAUI" value="0" />
+  <parameter name="BERWIDTH_gui" value="511" />
+  <parameter name="CAPABLE_FEC" value="1" />
+  <parameter name="DEV_VERSION" value="0" />
+  <parameter name="ENABLE_FEC" value="1" />
+  <parameter name="ENABLE_PCS_MODE" value="0" />
+  <parameter name="EN_CORECLK_1G" value="0" />
+  <parameter name="ERR_INDICATION" value="1" />
+  <parameter name="GOOD_PARITY" value="4" />
+  <parameter name="HARD_PRBS_ENABLE" value="0" />
+  <parameter name="HARD_PRBS_ENABLE_PORT" value="0" />
+  <parameter name="INITMAINVAL" value="25" />
+  <parameter name="INITPOSTVAL" value="13" />
+  <parameter name="INITPREVAL" value="3" />
+  <parameter name="INI_DATAPATH" value="10G" />
+  <parameter name="INVALD_PARITY" value="8" />
+  <parameter name="LINK_TIMER_KR" value="504.00" />
+  <parameter name="LINK_TIMER_KX" value="48.00" />
+  <parameter name="OPTIONAL_10G" value="1" />
+  <parameter name="OPTIONAL_FEC" value="0" />
+  <parameter name="OPTIONAL_RXPMA_CLK" value="0" />
+  <parameter name="OPTIONAL_RX_CLKOUT" value="0" />
+  <parameter name="OPTIONAL_RX_DIV33CLK" value="0" />
+  <parameter name="OPTIONAL_TXPMA_CLK" value="0" />
+  <parameter name="OPTIONAL_TX_CLKOUT" value="1" />
+  <parameter name="OPTIONAL_TX_DIV33CLK" value="0" />
+  <parameter name="PHY_IDENTIFIER" value="0" />
+  <parameter name="PREMAINVAL" value="30" />
+  <parameter name="PREPOSTVAL" value="0" />
+  <parameter name="PREPREVAL" value="0" />
+  <parameter name="REF_CLK_FREQ_10G" value="644.53125" />
+  <parameter name="REF_CLK_FREQ_1G" value="125.00 MHz" />
+  <parameter name="SYNTH_1588_ALL" value="0" />
+  <parameter name="SYNTH_AN" value="0" />
+  <parameter name="SYNTH_FEC" value="0" />
+  <parameter name="SYNTH_GIGE" value="1" />
+  <parameter name="SYNTH_GMII_gui" value="1" />
+  <parameter name="SYNTH_LT" value="0" />
+  <parameter name="SYNTH_MII" value="0" />
+  <parameter name="SYNTH_RCFG" value="1" />
+  <parameter name="SYNTH_SEQ" value="1" />
+  <parameter name="SYNTH_SGMII" value="1" />
+  <parameter name="TRNWTWIDTH_gui" value="127" />
+  <parameter name="USE_DEBUG_CPU" value="0" />
+  <parameter name="USE_ECC_CPU" value="0" />
+  <parameter name="VMAXRULE" value="30" />
+  <parameter name="VMINRULE" value="6" />
+  <parameter name="VODMINRULE" value="14" />
+  <parameter name="VPOSTRULE" value="25" />
+  <parameter name="VPRERULE" value="16" />
+  <parameter name="XGMII_32BIT_MODE" value="0" />
+  <parameter name="device" value="10AS066H2F34I1SG" />
+  <parameter name="phy_mgmt_clk_freq" value="125" />
+  <parameter name="sel_backplane_lineside" value="1Gb/10Gb Ethernet" />
+ </module>
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+</system>
