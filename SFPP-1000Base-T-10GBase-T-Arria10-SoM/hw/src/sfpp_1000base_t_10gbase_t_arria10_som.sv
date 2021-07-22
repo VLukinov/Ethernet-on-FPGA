@@ -82,6 +82,7 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     logic gmii_clock;
     logic gmii_reset_n;
     logic gmii_reset;
+
     logic gmii_clk_en;
     logic[7 : 0] gmii_rxd;
     logic gmii_rx_dv;
@@ -89,6 +90,15 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     logic[7 : 0] gmii_txd;
     logic gmii_tx_en;
     logic gmii_tx_er;
+
+    logic xgmii_clock;
+    logic xgmii_reset_n;
+    logic xgmii_reset;
+
+    logic[63 : 0] xgmii_rx_data;
+    logic[7 : 0] xgmii_rx_control;
+    logic[63 : 0] xgmii_tx_data;
+    logic[7 : 0] xgmii_tx_control;
 
     /// - Logic description ------------------------------------------------------------------------
 
@@ -111,7 +121,9 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     always_comb udp_dest_port = UDP_DEST_PORT;
 
     always_comb gmii_clk_en = 1'b1;
+
     always_ff @(posedge gmii_clock) gmii_reset <= ~gmii_reset_n;
+    always_ff @(posedge gmii_clock) xgmii_reset <= ~xgmii_reset_n;
 
     /// - External modules -------------------------------------------------------------------------
 
@@ -142,14 +154,14 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         .i_gmii_tx_err(gmii_tx_er),
         .i_gmii_tx_d(gmii_txd),
 
-        .o_xgmii_clock(),
-        .o_xgmii_rx_data(),
-        .o_xgmii_rx_control(),
-        .i_xgmii_tx_data(),
-        .i_xgmii_tx_control()
+        .o_xgmii_clock(xgmii_clock),
+        .o_xgmii_rx_data(xgmii_rx_data),
+        .o_xgmii_rx_control(xgmii_rx_control),
+        .i_xgmii_tx_data(xgmii_tx_data),
+        .i_xgmii_tx_control(xgmii_tx_control)
     );
 
-    // Ethernet PHY reset syncronizer
+    // GMII reset syncronizer
     reset_syncronizer gmii_reset_syncronizer_i (
         .i_clock(gmii_clock),
         .i_async_reset_n(reset_n),
@@ -182,6 +194,34 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         .phy_gmii_tx_er(gmii_tx_er),
         .phy_reset_n(),
         .phy_int_n()
+    );
+
+    // XGMII reset syncronizer
+    reset_syncronizer xgmii_reset_syncronizer_i (
+        .i_clock(xgmii_clock),
+        .i_async_reset_n(reset_n),
+        .o_sync_reset_n(xgmii_reset_n)
+    );
+
+    // 10G UDP FPGA core
+    xgmii_fpga_core xgmii_fpga_core_i (
+        // Clock: 156.25MHz
+        .clk(xgmii_clock),
+        // Synchronous reset
+        .rst(xgmii_reset),
+
+        // Ethernet configuration parameters
+        .local_mac(local_mac),
+        .local_ip(local_ip),
+        .gateway_ip(gateway_ip),
+        .subnet_mask(subnet_mask),
+        .udp_dest_port(udp_dest_port),
+
+        // Ethernet PHY: 10GBASE-T XGMII
+        .sfp_txd(xgmii_tx_data),
+        .sfp_txc(xgmii_tx_control),
+        .sfp_rxd(xgmii_rx_data),
+        .sfp_rxc(xgmii_rx_control)
     );
 
     /// - Outputs ----------------------------------------------------------------------------------

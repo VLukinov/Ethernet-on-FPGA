@@ -92,6 +92,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE src/sfpp_1000base_t_10gbase_t_arr
 set_global_assignment -name SYSTEMVERILOG_FILE src/sfp_ethernet_phy_control.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/reset_syncronizer.sv
 set_global_assignment -name VERILOG_FILE src/gmii_fpga_core.v
+set_global_assignment -name VERILOG_FILE src/xgmii_fpga_core.v
 
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/eth_mac_1g_fifo.v"
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/eth_mac_1g.v"
@@ -115,6 +116,20 @@ set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/arp_cache.v
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_ip_rx.v"
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_ip_tx.v"
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_checksum_gen.v"
+
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/eth_mac_10g_fifo.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/eth_mac_10g.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_complete_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/axis_xgmii_rx_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/axis_xgmii_tx_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/ip_complete_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_ip_rx_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_ip_tx_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/udp_checksum_gen_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/ip_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/ip_eth_rx_64.v"
+set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/rtl/ip_eth_tx_64.v"
 
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/lib/axis/rtl/axis_fifo.v"
 set_global_assignment -name VERILOG_FILE "../../verilog-ethernet/lib/axis/rtl/axis_async_fifo_adapter.v"
@@ -579,5 +594,5 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id XGMII
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id XGMII
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id XGMII
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/phy_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
