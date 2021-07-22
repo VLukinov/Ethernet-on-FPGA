@@ -73,6 +73,23 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     bit[FPGA_RESET_COUNTER_WIDTH - 1 : 0] reset_counter;
     logic reset_n;
 
+    bit[47 : 0] local_mac;
+    bit[31 : 0] local_ip;
+    bit[31 : 0] gateway_ip;
+    bit[31 : 0] subnet_mask;
+    bit[15 : 0] udp_dest_port;
+
+    logic gmii_clock;
+    logic gmii_reset_n;
+    logic gmii_reset;
+    logic gmii_clk_en;
+    logic[7 : 0] gmii_rxd;
+    logic gmii_rx_dv;
+    logic gmii_rx_er;
+    logic[7 : 0] gmii_txd;
+    logic gmii_tx_en;
+    logic gmii_tx_er;
+
     /// - Logic description ------------------------------------------------------------------------
 
     always_comb clock = ref_clock;
@@ -86,6 +103,15 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         if (reset_counter_en)
             reset_counter <= reset_counter + 1'b1;
     end
+
+    always_comb local_mac = LOCAL_MAC;
+    always_comb local_ip = LOCAL_IP;
+    always_comb gateway_ip = GATEWAY_IP;
+    always_comb subnet_mask = SUBNET_MASK;
+    always_comb udp_dest_port = UDP_DEST_PORT;
+
+    always_comb gmii_clk_en = 1'b1;
+    always_ff @(posedge gmii_clock) gmii_reset <= ~gmii_reset_n;
 
     /// - External modules -------------------------------------------------------------------------
 
@@ -108,19 +134,54 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         .io_sfp_mod2_sda(io_sfp_mod2_sda),
         .o_sfp_rate_sel(o_sfp_rate_sel),
 
-        .o_gmii_clock(),
-        .o_gmii_rx_dv(),
-        .o_gmii_rx_err(),
-        .o_gmii_rx_d(),
-        .i_gmii_tx_en(),
-        .i_gmii_tx_err(),
-        .i_gmii_tx_d(),
+        .o_gmii_clock(gmii_clock),
+        .o_gmii_rx_dv(gmii_rx_dv),
+        .o_gmii_rx_err(gmii_rx_er),
+        .o_gmii_rx_d(gmii_rxd),
+        .i_gmii_tx_en(gmii_tx_en),
+        .i_gmii_tx_err(gmii_tx_er),
+        .i_gmii_tx_d(gmii_txd),
 
         .o_xgmii_clock(),
         .o_xgmii_rx_data(),
         .o_xgmii_rx_control(),
         .i_xgmii_tx_data(),
         .i_xgmii_tx_control()
+    );
+
+    // Ethernet PHY reset syncronizer
+    reset_syncronizer gmii_reset_syncronizer_i (
+        .i_clock(gmii_clock),
+        .i_async_reset_n(reset_n),
+        .o_sync_reset_n(gmii_reset_n)
+    );
+
+    // UDP FPGA core
+    gmii_fpga_core gmii_fpga_core_i (
+        // Clock: 125MHz
+        .clk(clock),
+        // Synchronous reset
+        .rst(reset),
+
+        // Ethernet configuration parameters
+        .local_mac(local_mac),
+        .local_ip(local_ip),
+        .gateway_ip(gateway_ip),
+        .subnet_mask(subnet_mask),
+        .udp_dest_port(udp_dest_port),
+
+        // Ethernet PHY: 1000BASE-T GMII
+        .phy_gmii_clk(gmii_clock),
+        .phy_gmii_rst(gmii_reset),
+        .phy_gmii_clk_en(gmii_clk_en),
+        .phy_gmii_rxd(gmii_rxd),
+        .phy_gmii_rx_dv(gmii_rx_dv),
+        .phy_gmii_rx_er(gmii_rx_er),
+        .phy_gmii_txd(gmii_txd),
+        .phy_gmii_tx_en(gmii_tx_en),
+        .phy_gmii_tx_er(gmii_tx_er),
+        .phy_reset_n(),
+        .phy_int_n()
     );
 
     /// - Outputs ----------------------------------------------------------------------------------
