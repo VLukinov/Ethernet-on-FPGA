@@ -5,6 +5,11 @@ set_input_delay -clock altera_reserved_tck -clock_fall 3 [get_ports altera_reser
 set_output_delay -clock altera_reserved_tck 3 [get_ports altera_reserved_tdo]
 set_false_path -from [get_ports altera_reserved_ntrst] -to *
 
+create_clock -name {ref_clock}  -period 125.0MHz [get_ports {i_ref_clock}]
+create_clock -name {xcvr_ref_clock} -period 644.53125MHz [get_ports {i_xcvr_ref_clock}]
+
+set_false_path -from *reset_n -to *
+
 set_false_path -from * -to [get_ports o_sfp_*]
 set_false_path -from [get_ports i_sfp_*] -to *
 
@@ -23,6 +28,16 @@ set period_1g "125 MHz"
 set period_10g "644.53125 MHz"
 
 set_time_format -unit ns -decimal_places 3
+
+#**************************************************************
+# Create input reference Clocks
+#**************************************************************
+create_clock -name {pll_ref_clk_1g}  -period $period_1g   [get_ports {i_ref_clock}]
+create_clock -name {pll_ref_clk_10g} -period $period_10g  [get_ports {i_xcvr_ref_clock}]
+create_clock -name {phy_mgmt_clk}    -period $period_mgmt [get_ports {i_ref_clock}]
+
+derive_pll_clocks -create_base_clocks
+derive_clock_uncertainty
 
 #**************************************************************
 # Set Clock path suffix and data-path registers for below commands
@@ -63,18 +78,6 @@ set length       [get_collection_size $reg_check]
 if {$length!=0}  { set native_ls_inst "CHANNEL|DATAPATH_10G.NATIVE_PHY_10GHP_322_LS.native_10ghp_322_ls_inst|native_10ghp_322_ls|native_10ghp_322_ls_inst|"
                    set native_ls_variant 1
 } else           { set native_ls_variant 0 }
-
-
-
-#**************************************************************
-# Create input reference Clocks
-#**************************************************************
-create_clock -name {pll_ref_clk_1g}  -period $period_1g   [get_ports {ref_clk_1g}]
-create_clock -name {pll_ref_clk_10g} -period $period_10g  [get_ports {ref_clk_10g}]
-create_clock -name {phy_mgmt_clk}    -period $period_mgmt [get_ports {mm_clk}]
-
-derive_pll_clocks -create_base_clocks
-derive_clock_uncertainty
 
 # create generated clocks for 1G mode as the pma clock will change rate with PCS reconfiguration
 # the Gige frequency is 125MHz
@@ -180,7 +183,7 @@ set_false_path   -from [get_clocks txclk_1g_ch* ]      -to [get_clocks *tx_corec
 # to the rx clocks
 set_false_path   -from [get_clocks txclk_10g_ch* ]     -to [get_clocks rxclk_1g_ch* ]
 set_false_path   -from [get_clocks rxclk_10g_ch* ]     -to [get_clocks rxclk_1g_ch* ]
-set_false_path   -from [get_clocks *rx_coreclkin ]    -to [get_clocks rxclk_1g_ch* ]
+set_false_path   -from [get_clocks *rx_coreclkin ]     -to [get_clocks rxclk_1g_ch* ]
 set_false_path   -from [get_clocks *rx_pma_clk ]       -to [get_clocks rxclk_1g_ch* ]
 set_false_path   -from [get_clocks *rx_pma_div_clk ]   -to [get_clocks rxclk_1g_ch* ]
 set_false_path   -from [get_clocks txclk_10g_ch* ]     -to [get_clocks rxclk_10g_ch* ]
@@ -189,12 +192,12 @@ set_false_path   -from [get_clocks rxclk_1g_ch* ]      -to [get_clocks rxclk_10g
 set_false_path   -from [get_clocks *rx_pma_div_clk ]   -to [get_clocks rxclk_10g_ch* ]
 set_false_path   -from [get_clocks rxclk_10g_ch* ]     -to [get_clocks *rx_pma_div_clk ]
 set_false_path   -from [get_clocks rxclk_1g_ch* ]      -to [get_clocks *rx_pma_div_clk ]
-set_false_path   -from [get_clocks *rx_coreclkin ]    -to [get_clocks *rx_pma_div_clk ]
+set_false_path   -from [get_clocks *rx_coreclkin ]     -to [get_clocks *rx_pma_div_clk ]
 
 # these are for the Gige logic to the 10G logic
 set_false_path -from [get_registers -nowarn {*kr_gige_pcs_top*}] -to  [get_clocks {pll_ref_clk_10g}]
 # only tx-data[8:0] are real paths in GIGE mode. Rest higher bits, and 10G control signals false path for 1G clock
-set_false_path -from {sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0|CHANNEL|rx_10g_control_inter*} -to txclk_1g_ch*
+set_false_path -from {*sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0|CHANNEL|rx_10g_control_inter*} -to txclk_1g_ch*
 
 set_false_path -from [get_registers -nowarn {*kr_gige_pcs_top*}] -to  [get_clocks *$clk_xgmii]
 
@@ -210,7 +213,28 @@ if {$::quartus(nameofexecutable) == "quartus_fit"} {
 
 # Any transition between XGMII-clk (156.25MHz) to TX/RX-clkout (257MHz) are technically false paths
 # pld interface suppose to be time to XGMII-clk, somehow TX/RX-clkout get propagated
-set_false_path -from [get_clocks *$clk_xgmii] -to {altera_eth_multi_channel_inst|CHANNEL[*].altera_eth_channel_inst|phy|xcvr_10gkr_a10_0|CHANNEL|DATAPATH_10G.NATIVE_PHY_10G_644_LS.native_10g_644_ls_inst|*|native_10g_644_ls_inst|g_xcvr_native_insts[0].twentynm_xcvr_native_inst|twentynm_xcvr_native_inst|inst_twentynm_pcs|gen_twentynm_hssi_8g_tx_pcs.inst_twentynm_hssi_8g_tx_pcs~pld_tx_data_8g_fifo.reg}
+set_false_path -from [get_clocks rxclk_10g_ch*] -to *
+set_false_path -from [get_clocks rxclk_1g_ch*]  -to *
+set_false_path -from [get_clocks rxclk_10g_ch*] -to *
+set_false_path -from [get_clocks rxclk_1g_ch*]  -to *
+
+set_false_path -from * -to [get_clocks rxclk_10g_ch*]
+set_false_path -from * -to [get_clocks rxclk_1g_ch*]
+set_false_path -from * -to [get_clocks rxclk_10g_ch*]
+set_false_path -from * -to [get_clocks rxclk_1g_ch*]
+
+set_false_path -from [get_clocks *$clk_xgmii] -to {sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0|CHANNEL|DATAPATH_10G.NATIVE_PHY_10G_644_LS.native_10g_644_ls_inst|*|native_10g_644_ls_inst|g_xcvr_native_insts[0].twentynm_xcvr_native_inst|twentynm_xcvr_native_inst|inst_twentynm_pcs|gen_twentynm_hssi_8g_tx_pcs.inst_twentynm_hssi_8g_tx_pcs~pld_tx_data_8g_fifo.reg}
+
+## xgmii output should not be go to 125Mhz or 257mhz
+set_false_path -from * -to [get_clocks txclk_1g_ch*]
+set_false_path -from * -to [get_clocks txclk_10g_ch*]
+set_false_path -from * -to [get_clocks txclk_1g_ch*]
+set_false_path -from * -to [get_clocks txclk_10g_ch*]
+
+set_false_path -from [get_clocks txclk_1g_ch*] -to *
+set_false_path -from [get_clocks txclk_10g_ch*] -to *
+set_false_path -from [get_clocks txclk_1g_ch*] -to *
+set_false_path -from [get_clocks txclk_10g_ch*] -to *
 
 
 ## based on file altera_xcvr_10gkr_a10.sv, set_false_path -to [get_registers {*gf_clock_mux*ena_r0*}]
@@ -224,4 +248,5 @@ set_false_path -from {sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0
 # Any transition between XGMII-clk (156.25MHz) to TX/RX-clkout (257MHz) are technically false paths
 set_false_path -from [get_clocks *$clk_xgmii] -to {sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0|CHANNEL|DATAPATH_10G.NATIVE_PHY_10G_644_LS.native_10g_644_ls_inst|*|native_10g_644_ls_inst|g_xcvr_native_insts[0].twentynm_xcvr_native_inst|twentynm_xcvr_native_inst|inst_twentynm_pcs|gen_twentynm_hssi_10g_tx_pcs.inst_twentynm_hssi_10g_tx_pcs~pld_tx_data_10g_fifo.reg}
 set_false_path -from [get_clocks *$clk_xgmii] -to {sfp_ethernet_phy_control_i|ethernet_phy_i|xcvr_10gkr_a10_0|CHANNEL|DATAPATH_10G.NATIVE_PHY_10G_644_LS.native_10g_644_ls_inst|*|native_10g_644_ls_inst|g_xcvr_native_insts[0].twentynm_xcvr_native_inst|twentynm_xcvr_native_inst|inst_twentynm_pcs|gen_twentynm_hssi_tx_pld_pcs_interface.inst_twentynm_hssi_tx_pld_pcs_interface~pld_tx_control_fifo.reg}
+
 
