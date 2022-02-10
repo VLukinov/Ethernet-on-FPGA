@@ -1,13 +1,13 @@
 /**
- *  File:               sfpp_1000base_t_10gbase_t_arria10_som.sv
- *  Modules:            sfpp_1000base_t_10gbase_t_arria10_som
- *  Start design:       20.07.2021
- *  Last revision:      20.07.2021
+ *  File:               sfpp_usgmii_nbase_t_arria10_som.sv
+ *  Modules:            sfpp_usgmii_nbase_t_arria10_som
+ *  Start design:       10.02.2022
+ *  Last revision:      10.02.2022
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
- *  SFP+ 1000Base-T/10GBase-T example of using the "verilog-ethernet" library on Arria 10 SoM
+ *  SFP+ USXGMII  example of using the "verilog-ethernet" library on Arria 10 SoM
  *  Intel Arria V (5ASTFD5K3F40I3) FPGA
- *  Copyright (c) 2021 Vadim A. Lukinov
+ *  Copyright (c) 2022 Vadim A. Lukinov
  *
  *  Naming Conventions:
  *      parameter               "p_*"
@@ -20,19 +20,19 @@
  *      reset signal:           reset_n, rst_n
  *
  *  History:
- *      20.07.2021              Create first versions of modules: "sfpp_1000base_t_10gbase_t_arria10_som" - (Vadim A. Lukinov)
+ *      20.07.2021              Create first versions of modules: "sfpp_usgmii_nbase_t_arria10_som" - (Vadim A. Lukinov)
  *
  */
-`ifndef SFPP_1000BASE_T_10GBASE_T_ARRIA10_SOM_SV_
-`define SFPP_1000BASE_T_10GBASE_T_ARRIA10_SOM_SV_
+`ifndef SFPP_USGMII_NBASE_T_ARRIA10_SOM_SV_
+`define SFPP_USGMII_NBASE_T_ARRIA10_SOM_SV_
 
 
 /**
- *  module - "sfpp_1000base_t_10gbase_t_arria10_som"
- *  SFP+ 1000Base-T/10GBase-T example of using the "verilog-ethernet" library on Arria 10 SoM
+ *  module - "sfpp_usgmii_nbase_t_arria10_som"
+ *  SFP+ USXGMII  example of using the "verilog-ethernet" library on Arria 10 SoM
  *
  */
-module sfpp_1000base_t_10gbase_t_arria10_som
+module sfpp_usgmii_nbase_t_arria10_som
 #(
     parameter FPGA_REFERENCE_CLOCK_FREQUENCY = 125000000,
     parameter FPGA_RESET_DELAY_US = 20000,
@@ -79,18 +79,6 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     bit[31 : 0] subnet_mask;
     bit[15 : 0] udp_dest_port;
 
-    logic gmii_clock;
-    logic gmii_reset_n;
-    logic gmii_reset;
-
-    logic gmii_clk_en;
-    logic[7 : 0] gmii_rxd;
-    logic gmii_rx_dv;
-    logic gmii_rx_er;
-    logic[7 : 0] gmii_txd;
-    logic gmii_tx_en;
-    logic gmii_tx_er;
-
     logic xgmii_clock;
     logic xgmii_reset_n;
     logic xgmii_reset;
@@ -120,9 +108,6 @@ module sfpp_1000base_t_10gbase_t_arria10_som
     always_comb subnet_mask = SUBNET_MASK;
     always_comb udp_dest_port = UDP_DEST_PORT;
 
-    always_comb gmii_clk_en = 1'b1;
-
-    always_ff @(posedge gmii_clock) gmii_reset <= ~gmii_reset_n;
     always_ff @(posedge xgmii_clock) xgmii_reset <= ~xgmii_reset_n;
 
     /// - External modules -------------------------------------------------------------------------
@@ -132,8 +117,7 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         .i_clock(clock),
         .i_reset_n(reset_n),
 
-        .i_xcvr_1g_ref_clock(ref_clock),
-        .i_xcvr_10g_ref_clock(i_xcvr_ref_clock),
+        .i_xcvr_ref_clock(i_xcvr_ref_clock),
 
         .i_sfp_rx_serial_data(i_sfp_rx_serial_data),
         .o_sfp_tx_serial_data(o_sfp_tx_serial_data),
@@ -146,54 +130,11 @@ module sfpp_1000base_t_10gbase_t_arria10_som
         .io_sfp_mod2_sda(io_sfp_mod2_sda),
         .o_sfp_rate_sel(o_sfp_rate_sel),
 
-        .o_gmii_clock(gmii_clock),
-        .o_gmii_rx_dv(gmii_rx_dv),
-        .o_gmii_rx_err(gmii_rx_er),
-        .o_gmii_rx_d(gmii_rxd),
-        .i_gmii_tx_en(gmii_tx_en),
-        .i_gmii_tx_err(gmii_tx_er),
-        .i_gmii_tx_d(gmii_txd),
-
         .o_xgmii_clock(xgmii_clock),
         .o_xgmii_rx_data(xgmii_rx_data),
         .o_xgmii_rx_control(xgmii_rx_control),
         .i_xgmii_tx_data(xgmii_tx_data),
         .i_xgmii_tx_control(xgmii_tx_control)
-    );
-
-    // GMII reset syncronizer
-    reset_syncronizer gmii_reset_syncronizer_i (
-        .i_clock(gmii_clock),
-        .i_async_reset_n(reset_n),
-        .o_sync_reset_n(gmii_reset_n)
-    );
-
-    // UDP FPGA core
-    gmii_fpga_core gmii_fpga_core_i (
-        // Clock: 125MHz
-        .clk(clock),
-        // Synchronous reset
-        .rst(reset),
-
-        // Ethernet configuration parameters
-        .local_mac(local_mac),
-        .local_ip(local_ip),
-        .gateway_ip(gateway_ip),
-        .subnet_mask(subnet_mask),
-        .udp_dest_port(udp_dest_port),
-
-        // Ethernet PHY: 1000BASE-T GMII
-        .phy_gmii_clk(gmii_clock),
-        .phy_gmii_rst(gmii_reset),
-        .phy_gmii_clk_en(gmii_clk_en),
-        .phy_gmii_rxd(gmii_rxd),
-        .phy_gmii_rx_dv(gmii_rx_dv),
-        .phy_gmii_rx_er(gmii_rx_er),
-        .phy_gmii_txd(gmii_txd),
-        .phy_gmii_tx_en(gmii_tx_en),
-        .phy_gmii_tx_er(gmii_tx_er),
-        .phy_reset_n(),
-        .phy_int_n()
     );
 
     // XGMII reset syncronizer
@@ -231,5 +172,5 @@ module sfpp_1000base_t_10gbase_t_arria10_som
 endmodule
 
 
-`endif // SFPP_1000BASE_T_10GBASE_T_ARRIA10_SOM_SV_
+`endif // SFPP_USGMII_NBASE_T_ARRIA10_SOM_SV_
 
