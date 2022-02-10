@@ -131,17 +131,12 @@ module sfpp_usgmii_nbase_t_arria10_som
         .o_sfp_rate_sel(o_sfp_rate_sel),
 
         .o_xgmii_clock(xgmii_clock),
+        .o_xgmii_reset_n(xgmii_reset_n),
+
         .o_xgmii_rx_data(xgmii_rx_data),
         .o_xgmii_rx_control(xgmii_rx_control),
         .i_xgmii_tx_data(xgmii_tx_data),
         .i_xgmii_tx_control(xgmii_tx_control)
-    );
-
-    // XGMII reset syncronizer
-    reset_syncronizer xgmii_reset_syncronizer_i (
-        .i_clock(xgmii_clock),
-        .i_async_reset_n(reset_n),
-        .o_sync_reset_n(xgmii_reset_n)
     );
 
     // 10G UDP FPGA core

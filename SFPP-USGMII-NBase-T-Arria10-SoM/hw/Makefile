@@ -6,11 +6,10 @@ all:
 clean:
 	quartus_sh --clean $(PRJ)
 
-	# rm -rf ./ip/ethernet_phy/ethernet_phy
-	# rm -rf ./ip/xcvr_1g_pll/xcvr_1g_pll
-	# rm -rf ./ip/xcvr_10g_pll/xcvr_10g_pll
-	# rm -rf ./ip/xcvr_reset_control/xcvr_reset_control
-	# rm -rf ./ip/xgmii_pll/xgmii_pll
+	rm -rf ./ip/usxgmii_eth_phy/usxgmii_eth_phy
+	rm -rf ./ip/xcvr_reset_control/xcvr_reset_control
+	rm -rf ./ip/xcvr_pll/xcvr_pll
+	rm -rf ./ip/usxgmii_eth_pll/usxgmii_eth_pll
 
 	rm -f *.sopcinfo
 	rm -f *.txt

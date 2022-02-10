@@ -1,12 +1,12 @@
 /**
- *  File:               reset_syncronizer.sv
- *  Modules:            reset_syncronizer
+ *  File:               reset_synchronizer.sv
+ *  Modules:            reset_synchronizer
  *  Start design:       14.11.2019
- *  Last revision:      17.12.2019
+ *  Last revision:      16.12.2021
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  Reset syncronizer - turns asynchronous reset to synchronous
- *  Copyright (c) 2021 Vadim A. Lukinov
+ *  Copyright (c) 2019 Vadim A. Lukinov Wartech LLC
  *
  *  Naming Conventions:
  *      parameter               "p_*"
@@ -20,21 +20,22 @@
  *
  *  History:
  *      14.11.2019              Create first versions of modules: "reset_syncronizer" - (Vadim A. Lukinov)
+ *      16.12.2021              Changed the name of the module to "reset_synchronizer" - (Vadim A. Lukinov)
  *
  */
-`ifndef RESET_SYNCRONIZER_SV_
-`define RESET_SYNCRONIZER_SV_
+`ifndef RESET_SYNCHRONIZER_SV_
+`define RESET_SYNCHRONIZER_SV_
 
 
 /**
- *  module - "reset_syncronizer"
+ *  module - "reset_synchronizer"
  *  Reset syncronizer - turns asynchronous reset to synchronous
  *
  *  Parameters:
  *      p_delay_cycles - number of reset ticks
  *
  */
-module reset_syncronizer
+module reset_synchronizer
 #(
     parameter p_delay_cycles = 8
 )(
@@ -67,7 +68,7 @@ module reset_syncronizer
         end
     end
 
-    always_comb sync_reset_n <= reset_syncronizer[DELAY_CYCLES - 1];
+    always_comb sync_reset_n = reset_syncronizer[DELAY_CYCLES - 1];
 
     /// - Outputs ----------------------------------------------------------------------------------
 
@@ -76,5 +77,5 @@ module reset_syncronizer
 endmodule
 
 
-`endif // RESET_SYNCRONIZER_SV_
+`endif // RESET_SYNCHRONIZER_SV_
 

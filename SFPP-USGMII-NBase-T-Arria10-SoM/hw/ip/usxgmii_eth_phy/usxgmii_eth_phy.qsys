@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags="INTERNAL_COMPONENT=true"
+   categories="System" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element alt_mge_phy_0
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="10AS066H2F34I1SG" />
+ <parameter name="deviceFamily" value="Arria 10" />
+ <parameter name="deviceSpeedGrade" value="1" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="true" />
+ <parameter name="lockedInterfaceDefinition" value="" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName" value="" />
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface
+   name="avalon_mm_csr"
+   internal="alt_mge_phy_0.avalon_mm_csr"
+   type="avalon"
+   dir="end">
+  <port name="csr_readdata" internal="csr_readdata" />
+  <port name="csr_writedata" internal="csr_writedata" />
+  <port name="csr_address" internal="csr_address" />
+  <port name="csr_waitrequest" internal="csr_waitrequest" />
+  <port name="csr_read" internal="csr_read" />
+  <port name="csr_write" internal="csr_write" />
+ </interface>
+ <interface
+   name="csr_clk"
+   internal="alt_mge_phy_0.csr_clk"
+   type="clock"
+   dir="end">
+  <port name="csr_clk" internal="csr_clk" />
+ </interface>
+ <interface name="gmii16b_rx_d" internal="alt_mge_phy_0.gmii16b_rx_d" />
+ <interface name="gmii16b_rx_dv" internal="alt_mge_phy_0.gmii16b_rx_dv" />
+ <interface name="gmii16b_rx_err" internal="alt_mge_phy_0.gmii16b_rx_err" />
+ <interface name="gmii16b_tx_d" internal="alt_mge_phy_0.gmii16b_tx_d" />
+ <interface name="gmii16b_tx_en" internal="alt_mge_phy_0.gmii16b_tx_en" />
+ <interface name="gmii16b_tx_err" internal="alt_mge_phy_0.gmii16b_tx_err" />
+ <interface
+   name="led_an"
+   internal="alt_mge_phy_0.led_an"
+   type="conduit"
+   dir="end">
+  <port name="led_an" internal="led_an" />
+ </interface>
+ <interface name="led_char_err" internal="alt_mge_phy_0.led_char_err" />
+ <interface name="led_disp_err" internal="alt_mge_phy_0.led_disp_err" />
+ <interface name="led_link" internal="alt_mge_phy_0.led_link" />
+ <interface
+   name="operating_speed"
+   internal="alt_mge_phy_0.operating_speed"
+   type="conduit"
+   dir="end">
+  <port name="operating_speed" internal="operating_speed" />
+ </interface>
+ <interface
+   name="reconfig_avmm"
+   internal="alt_mge_phy_0.reconfig_avmm"
+   type="avalon"
+   dir="end">
+  <port name="reconfig_write" internal="reconfig_write" />
+  <port name="reconfig_read" internal="reconfig_read" />
+  <port name="reconfig_address" internal="reconfig_address" />
+  <port name="reconfig_writedata" internal="reconfig_writedata" />
+  <port name="reconfig_readdata" internal="reconfig_readdata" />
+  <port name="reconfig_waitrequest" internal="reconfig_waitrequest" />
+ </interface>
+ <interface
+   name="reconfig_clk"
+   internal="alt_mge_phy_0.reconfig_clk"
+   type="clock"
+   dir="end">
+  <port name="reconfig_clk" internal="reconfig_clk" />
+ </interface>
+ <interface
+   name="reconfig_reset"
+   internal="alt_mge_phy_0.reconfig_reset"
+   type="reset"
+   dir="end">
+  <port name="reconfig_reset" internal="reconfig_reset" />
+ </interface>
+ <interface name="reset" internal="alt_mge_phy_0.reset" type="reset" dir="end">
+  <port name="reset" internal="reset" />
+ </interface>
+ <interface
+   name="rx_analogreset"
+   internal="alt_mge_phy_0.rx_analogreset"
+   type="conduit"
+   dir="end">
+  <port name="rx_analogreset" internal="rx_analogreset" />
+ </interface>
+ <interface
+   name="rx_block_lock"
+   internal="alt_mge_phy_0.rx_block_lock"
+   type="conduit"
+   dir="end">
+  <port name="rx_block_lock" internal="rx_block_lock" />
+ </interface>
+ <interface name="rx_blocklock" internal="alt_mge_phy_0.rx_blocklock" />
+ <interface
+   name="rx_cal_busy"
+   internal="alt_mge_phy_0.rx_cal_busy"
+   type="conduit"
+   dir="end">
+  <port name="rx_cal_busy" internal="rx_cal_busy" />
+ </interface>
+ <interface name="rx_cdr_refclk" internal="alt_mge_phy_0.rx_cdr_refclk" />
+ <interface name="rx_cdr_refclk_0" internal="alt_mge_phy_0.rx_cdr_refclk_0" />
+ <interface
+   name="rx_cdr_refclk_1"
+   internal="alt_mge_phy_0.rx_cdr_refclk_1"
+   type="clock"
+   dir="end">
+  <port name="rx_cdr_refclk_1" internal="rx_cdr_refclk_1" />
+ </interface>
+ <interface name="rx_clkout" internal="alt_mge_phy_0.rx_clkout" />
+ <interface
+   name="rx_digitalreset"
+   internal="alt_mge_phy_0.rx_digitalreset"
+   type="reset"
+   dir="end">
+  <port name="rx_digitalreset" internal="rx_digitalreset" />
+ </interface>
+ <interface
+   name="rx_is_lockedtodata"
+   internal="alt_mge_phy_0.rx_is_lockedtodata"
+   type="conduit"
+   dir="end">
+  <port name="rx_is_lockedtodata" internal="rx_is_lockedtodata" />
+ </interface>
+ <interface
+   name="rx_pma_clkout"
+   internal="alt_mge_phy_0.rx_pma_clkout"
+   type="clock"
+   dir="start">
+  <port name="rx_pma_clkout" internal="rx_pma_clkout" />
+ </interface>
+ <interface
+   name="rx_serial_data"
+   internal="alt_mge_phy_0.rx_serial_data"
+   type="conduit"
+   dir="end">
+  <port name="rx_serial_data" internal="rx_serial_data" />
+ </interface>
+ <interface name="rx_xgmii_control" internal="alt_mge_phy_0.rx_xgmii_control" />
+ <interface name="rx_xgmii_data" internal="alt_mge_phy_0.rx_xgmii_data" />
+ <interface
+   name="tx_analogreset"
+   internal="alt_mge_phy_0.tx_analogreset"
+   type="conduit"
+   dir="end">
+  <port name="tx_analogreset" internal="tx_analogreset" />
+ </interface>
+ <interface
+   name="tx_cal_busy"
+   internal="alt_mge_phy_0.tx_cal_busy"
+   type="conduit"
+   dir="end">
+  <port name="tx_cal_busy" internal="tx_cal_busy" />
+ </interface>
+ <interface name="tx_clkout" internal="alt_mge_phy_0.tx_clkout" />
+ <interface
+   name="tx_digitalreset"
+   internal="alt_mge_phy_0.tx_digitalreset"
+   type="reset"
+   dir="end">
+  <port name="tx_digitalreset" internal="tx_digitalreset" />
+ </interface>
+ <interface
+   name="tx_serial_clk"
+   internal="alt_mge_phy_0.tx_serial_clk"
+   type="conduit"
+   dir="end">
+  <port name="tx_serial_clk" internal="tx_serial_clk" />
+ </interface>
+ <interface
+   name="tx_serial_data"
+   internal="alt_mge_phy_0.tx_serial_data"
+   type="conduit"
+   dir="end">
+  <port name="tx_serial_data" internal="tx_serial_data" />
+ </interface>
+ <interface name="tx_xgmii_control" internal="alt_mge_phy_0.tx_xgmii_control" />
+ <interface name="tx_xgmii_data" internal="alt_mge_phy_0.tx_xgmii_data" />
+ <interface name="xcvr_mode" internal="alt_mge_phy_0.xcvr_mode" />
+ <interface
+   name="xgmii_rx_control"
+   internal="alt_mge_phy_0.xgmii_rx_control"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_rx_control" internal="xgmii_rx_control" />
+ </interface>
+ <interface
+   name="xgmii_rx_coreclkin"
+   internal="alt_mge_phy_0.xgmii_rx_coreclkin"
+   type="clock"
+   dir="end">
+  <port name="xgmii_rx_coreclkin" internal="xgmii_rx_coreclkin" />
+ </interface>
+ <interface
+   name="xgmii_rx_data"
+   internal="alt_mge_phy_0.xgmii_rx_data"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_rx_data" internal="xgmii_rx_data" />
+ </interface>
+ <interface
+   name="xgmii_rx_valid"
+   internal="alt_mge_phy_0.xgmii_rx_valid"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_rx_valid" internal="xgmii_rx_valid" />
+ </interface>
+ <interface
+   name="xgmii_tx_control"
+   internal="alt_mge_phy_0.xgmii_tx_control"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_tx_control" internal="xgmii_tx_control" />
+ </interface>
+ <interface
+   name="xgmii_tx_coreclkin"
+   internal="alt_mge_phy_0.xgmii_tx_coreclkin"
+   type="clock"
+   dir="end">
+  <port name="xgmii_tx_coreclkin" internal="xgmii_tx_coreclkin" />
+ </interface>
+ <interface
+   name="xgmii_tx_data"
+   internal="alt_mge_phy_0.xgmii_tx_data"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_tx_data" internal="xgmii_tx_data" />
+ </interface>
+ <interface
+   name="xgmii_tx_valid"
+   internal="alt_mge_phy_0.xgmii_tx_valid"
+   type="conduit"
+   dir="end">
+  <port name="xgmii_tx_valid" internal="xgmii_tx_valid" />
+ </interface>
+ <module
+   name="alt_mge_phy_0"
+   kind="alt_mge_phy"
+   version="17.1"
+   enabled="1"
+   autoexport="1">
+  <parameter name="AUTO_DEVICE" value="10AS066H2F34I1SG" />
+  <parameter name="AUTO_DEVICE_SPEEDGRADE" value="1" />
+  <parameter name="DEFAULT_MODE" value="3" />
+  <parameter name="DEVICE_FAMILY" value="Arria 10" />
+  <parameter name="ENABLE_IEEE1588" value="0" />
+  <parameter name="EXT_PHY_MGBASET" value="0" />
+  <parameter name="EXT_PHY_NBASET" value="1" />
+  <parameter name="PHY_IDENTIFIER" value="305419896" />
+  <parameter name="REFCLK_FREQ_BASER" value="0" />
+  <parameter name="SHOW_HIDDEN_OPTIONS" value="0" />
+  <parameter name="SPEED_VARIANT" value="4" />
+  <parameter name="TX_PLL_CLOCK_NETWORK_1G" value="xN" />
+  <parameter name="TX_PLL_CLOCK_NETWORK_2P5G" value="xN" />
+  <parameter name="TX_PMA_CLK_DIV_1G" value="1" />
+  <parameter name="TX_PMA_CLK_DIV_2P5G" value="1" />
+  <parameter name="XCVR_RCFG_JTAG_ENABLE" value="0" />
+  <parameter name="XCVR_SET_CAPABILITY_REG_ENABLE" value="0" />
+  <parameter name="XCVR_SET_CSR_SOFT_LOGIC_ENABLE" value="0" />
+  <parameter name="XCVR_SET_ODI_SOFT_LOGIC_ENABLE" value="0" />
+  <parameter name="XCVR_SET_PRBS_SOFT_LOGIC_ENABLE" value="0" />
+  <parameter name="XCVR_SET_USER_IDENTIFIER" value="0" />
+ </module>
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+</system>

@@ -29,7 +29,7 @@
 
 /**
  *  module - "sfp_ethernet_phy_control"
- *  SFP && 1000Base-T/10GBase-T ethernet PHY controller on Arria 10
+ *  SFP+ USXGMII NBase-T ethernet PHY controller on Arria 10
  *
  */
 module sfp_ethernet_phy_control
@@ -51,6 +51,8 @@ module sfp_ethernet_phy_control
     output logic[1 : 0] o_sfp_rate_sel,
 
     output logic o_xgmii_clock,
+    output logic o_xgmii_reset_n,
+
     output logic[7 : 0][7 : 0] o_xgmii_rx_data,
     output logic[7 : 0] o_xgmii_rx_control,
     input logic[7 : 0][7 : 0] i_xgmii_tx_data,
@@ -81,6 +83,27 @@ module sfp_ethernet_phy_control
     logic phy_reset;
     logic phy_reset_n;
 
+    logic xcvr_pll_locked;
+    logic xcvr_pll_cal_busy;
+    logic xcvr_pll_powerdown;
+    logic xcvr_tx_serial_clk;
+
+    logic xcvr_rx_cal_busy;
+    logic xcvr_rx_analogreset;
+    logic xcvr_rx_digitalreset;
+    logic xcvr_rx_is_lockedtodata;
+
+    logic xcvr_tx_cal_busy;
+    logic xcvr_tx_analogreset;
+    logic xcvr_tx_digitalreset;
+
+    logic usxgmii_clock;
+    logic xgmii_clock;
+    logic xgmii_pll_locked;
+    logic xgmii_pll_powerdown;
+    logic xgmii_pll_cal_busy;
+    logic xgmii_reset_n;
+
     /// - Logic description ------------------------------------------------------------------------
 
     always_comb clock = i_clock;
@@ -97,8 +120,109 @@ module sfp_ethernet_phy_control
     always_comb sfp_phy_ready = ~(sfp_los | sfp_tx_fault | sfp_mod0_prsnt_n);
     always_comb phy_reset = ~phy_reset_n;
 
+    always_comb xgmii_pll_powerdown = reset;
+
     /// - External modules -------------------------------------------------------------------------
 
+    // Ethernet PHY reset syncronizer
+    reset_synchronizer phy_reset_synchronizer_i (
+        .i_clock(clock),
+        .i_async_reset_n(sfp_phy_ready),
+        .o_sync_reset_n(phy_reset_n)
+    );
+
+    // XCVR ATX-PLL
+    xcvr_pll xcvr_pll_i (
+        .pll_cal_busy(xcvr_pll_cal_busy),
+        .pll_locked(xcvr_pll_locked),
+        .pll_powerdown(xcvr_pll_powerdown),
+        .pll_refclk0(xcvr_ref_clock),
+        .tx_serial_clk(xcvr_tx_serial_clk)
+    );
+
+    // XCVR reset controller
+    xcvr_reset_control xcvr_reset_control_i (
+        .clock(clock),
+        .pll_locked(xcvr_pll_locked),
+        .pll_powerdown(xcvr_pll_powerdown),
+        .pll_select(),
+        .reset(phy_reset),
+        .rx_analogreset(xcvr_rx_analogreset),
+        .rx_cal_busy(xcvr_rx_cal_busy),
+        .rx_digitalreset(xcvr_rx_digitalreset),
+        .rx_is_lockedtodata(xcvr_rx_is_lockedtodata),
+        .rx_ready(),
+        .tx_analogreset(xcvr_tx_analogreset),
+        .tx_cal_busy(xcvr_tx_cal_busy),
+        .tx_digitalreset(xcvr_tx_digitalreset),
+        .tx_ready()
+    );
+
+    // USXGMII NBase-T ethernet PHY
+    usxgmii_eth_phy usxgmii_eth_phy_i (
+        .csr_readdata(),
+        .csr_writedata(),
+        .csr_address(),
+        .csr_waitrequest(),
+        .csr_read(),
+        .csr_write(),
+        .csr_clk(clock),
+
+        .led_an(),
+        .operating_speed(),
+
+        .reconfig_write(),
+        .reconfig_read(),
+        .reconfig_address(),
+        .reconfig_writedata(),
+        .reconfig_readdata(),
+        .reconfig_waitrequest(),
+        .reconfig_clk(clock),
+        .reconfig_reset(reset),
+
+        .reset(phy_reset),
+
+        .rx_analogreset(xcvr_rx_analogreset),
+        .rx_block_lock(),
+        .rx_cal_busy(xcvr_rx_cal_busy),
+        .rx_cdr_refclk_1(xcvr_ref_clock),
+        .rx_digitalreset(xcvr_rx_digitalreset),
+        .rx_is_lockedtodata(xcvr_rx_is_lockedtodata),
+        .rx_pma_clkout(),
+        .rx_serial_data(i_sfp_rx_serial_data),
+
+        .tx_analogreset(xcvr_tx_analogreset),
+        .tx_cal_busy(xcvr_tx_cal_busy),
+        .tx_digitalreset(xcvr_tx_digitalreset),
+        .tx_serial_clk(xcvr_tx_serial_clk),
+        .tx_serial_data(o_sfp_tx_serial_data),
+
+        .xgmii_rx_control(),
+        .xgmii_rx_coreclkin(usxgmii_clock),
+        .xgmii_rx_data(),
+        .xgmii_rx_valid(),
+        .xgmii_tx_control(),
+        .xgmii_tx_coreclkin(usxgmii_clock),
+        .xgmii_tx_data(),
+        .xgmii_tx_valid()
+    );
+
+    // USXGMII core fPLL
+    usxgmii_eth_pll usxgmii_eth_pll_i (
+        .outclk0(xgmii_clock),      // 156.25 XGMII clock
+        .outclk1(usxgmii_clock),    // 312.5 USXGMII core clock
+        .pll_cal_busy(xgmii_pll_cal_busy),
+        .pll_locked(xgmii_pll_locked),
+        .pll_powerdown(xgmii_pll_powerdown),
+        .pll_refclk0(xcvr_ref_clock)
+    );
+
+    // XGMII reset syncronizer
+    reset_synchronizer reset_synchronizer_i (
+        .i_clock(xgmii_clock),
+        .i_async_reset_n(xgmii_pll_locked),
+        .o_sync_reset_n(xgmii_reset_n)
+    );
 
     /// - Outputs ----------------------------------------------------------------------------------
 
@@ -106,6 +230,9 @@ module sfp_ethernet_phy_control
 
     assign io_sfp_mod1_scl = sfp_mod1_scl;
     assign io_sfp_mod2_sda = sfp_mod2_sda;
+
+    always_comb o_xgmii_clock = xgmii_clock;
+    always_comb o_xgmii_reset_n = xgmii_reset_n;
 
 endmodule
 
