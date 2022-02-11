@@ -52,6 +52,7 @@ module sfp_ethernet_phy_control
 
     output logic o_xgmii_clock,
     output logic o_xgmii_reset_n,
+    output logic o_xgmii_power_on_reset_n,
 
     output logic[7 : 0][7 : 0] o_xgmii_rx_data,
     output logic[7 : 0] o_xgmii_rx_control,
@@ -102,6 +103,9 @@ module sfp_ethernet_phy_control
     logic xgmii_pll_locked;
     logic xgmii_pll_powerdown;
     logic xgmii_pll_cal_busy;
+
+    logic xgmii_power_on_reset_n;
+    logic xgmii_async_reset_n;
     logic xgmii_reset_n;
 
     logic usxgmii_rx_valid;
@@ -129,6 +133,8 @@ module sfp_ethernet_phy_control
     always_comb phy_reset = ~phy_reset_n;
 
     always_comb xgmii_pll_powerdown = reset;
+
+    always_comb xgmii_async_reset_n = sfp_phy_ready & xgmii_pll_locked;
 
     /// - External modules -------------------------------------------------------------------------
 
@@ -226,10 +232,17 @@ module sfp_ethernet_phy_control
     );
 
     // XGMII reset syncronizer
-    reset_synchronizer reset_synchronizer_i (
+    reset_synchronizer xgmii_reset_synchronizer_i (
+        .i_clock(xgmii_clock),
+        .i_async_reset_n(xgmii_async_reset_n),
+        .o_sync_reset_n(xgmii_reset_n)
+    );
+
+    // XGMII power-on-reset syncronizer
+    reset_synchronizer xgmii_reset_synchronizer_i (
         .i_clock(xgmii_clock),
         .i_async_reset_n(xgmii_pll_locked),
-        .o_sync_reset_n(xgmii_reset_n)
+        .o_sync_reset_n(xgmii_power_on_reset_n)
     );
 
     // USXGMII to XGMII protocol converter
@@ -269,6 +282,7 @@ module sfp_ethernet_phy_control
 
     always_comb o_xgmii_clock = xgmii_clock;
     always_comb o_xgmii_reset_n = xgmii_reset_n;
+    always_comb o_xgmii_power_on_reset_n = xgmii_power_on_reset_n;
 
 endmodule
 
