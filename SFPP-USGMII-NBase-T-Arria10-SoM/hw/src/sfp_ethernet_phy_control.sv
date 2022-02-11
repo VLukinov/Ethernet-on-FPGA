@@ -1,13 +1,13 @@
 /**
  *  File:               sfp_ethernet_phy_control.sv
  *  Modules:            sfp_ethernet_phy_control
- *  Start design:       21.07.2021
- *  Last revision:      21.07.2021
+ *  Start design:       10.02.2022
+ *  Last revision:      10.02.2022
  *  Source language:    SystemVerilog 3.1a IEEE 1364-2001
  *
  *  SFP+ USXGMII NBase-T ethernet PHY controller on Arria 10
  *  Intel Arria V (5ASTFD5K3F40I3) FPGA
- *  Copyright (c) 2021 Vadim A. Lukinov
+ *  Copyright (c) 2022 Vadim A. Lukinov
  *
  *  Naming Conventions:
  *      parameter               "p_*"
@@ -104,6 +104,14 @@ module sfp_ethernet_phy_control
     logic xgmii_pll_cal_busy;
     logic xgmii_reset_n;
 
+    logic usxgmii_rx_valid;
+    logic[3 : 0] usxgmii_rx_control;
+    logic[31 : 0] usxgmii_rx_data;
+
+    logic usxgmii_tx_valid;
+    logic[3 : 0] usxgmii_tx_control;
+    logic[31 : 0] usxgmii_tx_data;
+
     /// - Logic description ------------------------------------------------------------------------
 
     always_comb clock = i_clock;
@@ -197,14 +205,14 @@ module sfp_ethernet_phy_control
         .tx_serial_clk(xcvr_tx_serial_clk),
         .tx_serial_data(o_sfp_tx_serial_data),
 
-        .xgmii_rx_control(),
+        .xgmii_rx_control(usxgmii_rx_control),
         .xgmii_rx_coreclkin(usxgmii_clock),
-        .xgmii_rx_data(),
-        .xgmii_rx_valid(),
-        .xgmii_tx_control(),
+        .xgmii_rx_data(usxgmii_rx_data),
+        .xgmii_rx_valid(usxgmii_rx_valid),
+        .xgmii_tx_control(usxgmii_tx_control),
         .xgmii_tx_coreclkin(usxgmii_clock),
-        .xgmii_tx_data(),
-        .xgmii_tx_valid()
+        .xgmii_tx_data(usxgmii_tx_data),
+        .xgmii_tx_valid(usxgmii_tx_valid)
     );
 
     // USXGMII core fPLL
@@ -222,6 +230,34 @@ module sfp_ethernet_phy_control
         .i_clock(xgmii_clock),
         .i_async_reset_n(xgmii_pll_locked),
         .o_sync_reset_n(xgmii_reset_n)
+    );
+
+    // USXGMII to XGMII protocol converter
+    usxgmii_to_xgmii_convert usxgmii_to_xgmii_convert_i (
+        .i_xgmii_clock(xgmii_clock),
+        .i_xgmii_reset_n(xgmii_reset_n),
+        .i_usxgmii_clock(usxgmii_clock),
+
+        .i_usxgmii_valid(usxgmii_rx_valid),
+        .i_usxgmii_control(usxgmii_rx_control),
+        .i_usxgmii_data(usxgmii_rx_data),
+
+        .o_xgmii_control(o_xgmii_rx_control),
+        .o_xgmii_data(o_xgmii_rx_data)
+    );
+
+    // XGMII to USXGMII protocol converter
+    xgmii_to_usxgmii_convert xgmii_to_usxgmii_convert_i (
+        .i_xgmii_clock(xgmii_clock),
+        .i_xgmii_reset_n(xgmii_reset_n),
+        .i_usxgmii_clock(usxgmii_clock),
+
+        .i_xgmii_control(i_xgmii_tx_control),
+        .i_xgmii_data(i_xgmii_tx_data),
+
+        .o_usxgmii_valid(usxgmii_tx_valid),
+        .o_usxgmii_control(usxgmii_tx_control),
+        .o_usxgmii_data(usxgmii_tx_data)
     );
 
     /// - Outputs ----------------------------------------------------------------------------------
