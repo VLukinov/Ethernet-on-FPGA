@@ -58,8 +58,8 @@ module sfpp_usgmii_nbase_t_arria10_som
     localparam FPGA_RESET_COUNTER_WIDTH = $clog2(FPGA_RESET_COUNTER_MODULE);
 
     localparam bit[47 : 0] LOCAL_MAC =      48'h02_00_00_00_00_00;
-    localparam bit[31 : 0] LOCAL_IP =       { 8'd192, 8'd168, 8'd1,   8'd128 };
-    localparam bit[31 : 0] GATEWAY_IP =     { 8'd192, 8'd168, 8'd1,   8'd1 };
+    localparam bit[31 : 0] LOCAL_IP =       { 8'd10, 8'd10, 8'd50,   8'd100 };
+    localparam bit[31 : 0] GATEWAY_IP =     { 8'd10, 8'd10, 8'd50,   8'd1 };
     localparam bit[31 : 0] SUBNET_MASK =    { 8'd255, 8'd255, 8'd255, 8'd0 };
     localparam bit[15 : 0] UDP_DEST_PORT =  16'd1234;
 
@@ -132,6 +132,7 @@ module sfpp_usgmii_nbase_t_arria10_som
 
         .o_xgmii_clock(xgmii_clock),
         .o_xgmii_reset_n(xgmii_reset_n),
+        .o_xgmii_power_on_reset_n(),
 
         .o_xgmii_rx_data(xgmii_rx_data),
         .o_xgmii_rx_control(xgmii_rx_control),
