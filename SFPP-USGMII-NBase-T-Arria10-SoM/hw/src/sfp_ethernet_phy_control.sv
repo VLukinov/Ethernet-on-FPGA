@@ -239,7 +239,7 @@ module sfp_ethernet_phy_control
     );
 
     // XGMII power-on-reset syncronizer
-    reset_synchronizer xgmii_reset_synchronizer_i (
+    reset_synchronizer xgmii_power_on_reset_synchronizer_i (
         .i_clock(xgmii_clock),
         .i_async_reset_n(xgmii_pll_locked),
         .o_sync_reset_n(xgmii_power_on_reset_n)

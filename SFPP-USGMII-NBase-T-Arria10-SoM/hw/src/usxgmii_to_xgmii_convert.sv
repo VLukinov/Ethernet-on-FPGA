@@ -83,9 +83,9 @@ module usxgmii_to_xgmii_convert
     always_comb xgmii_reset_n = i_xgmii_reset_n;
     always_comb usxgmii_clock = i_usxgmii_clock;
 
-    always_comb usxgmii_valid = i_usxgmii_valid;
-    always_comb usxgmii_control = i_usxgmii_control;
-    always_comb usxgmii_data = i_usxgmii_data;
+    always_ff @(posedge usxgmii_clock) usxgmii_valid <= i_usxgmii_valid;
+    always_ff @(posedge usxgmii_clock) usxgmii_control <= i_usxgmii_control;
+    always_ff @(posedge usxgmii_clock) usxgmii_data <= i_usxgmii_data;
 
     always_comb fifo_wrreq = usxgmii_valid & ~usxgmii_to_xgmii_control_fifo_wrfull & ~usxgmii_to_xgmii_data_fifo_wrfull;
     always_comb fifo_rdreq = ~usxgmii_to_xgmii_control_fifo_rdempty & ~usxgmii_to_xgmii_data_fifo_rdempty;
@@ -99,8 +99,8 @@ module usxgmii_to_xgmii_convert
     always_comb usxgmii_to_xgmii_control_fifo_rdreq = fifo_rdreq;
     always_comb usxgmii_to_xgmii_data_fifo_rdreq = fifo_rdreq;
 
-    always_comb xgmii_control = usxgmii_to_xgmii_control_fifo_q;
-    always_comb xgmii_data = usxgmii_to_xgmii_data_fifo_q;
+    always_ff @(posedge xgmii_clock) xgmii_control <= usxgmii_to_xgmii_control_fifo_q;
+    always_ff @(posedge xgmii_clock) xgmii_data <= usxgmii_to_xgmii_data_fifo_q;
 
     /// - External modules -------------------------------------------------------------------------
 

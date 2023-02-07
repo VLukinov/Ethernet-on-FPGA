@@ -5,6 +5,9 @@ set_input_delay -clock altera_reserved_tck -clock_fall 3 [get_ports altera_reser
 set_output_delay -clock altera_reserved_tck 3 [get_ports altera_reserved_tdo]
 set_false_path -from [get_ports altera_reserved_ntrst] -to *
 
+derive_pll_clocks -create_base_clocks
+derive_clock_uncertainty
+
 create_clock -name {ref_clock}  -period 125.0MHz [get_ports {i_ref_clock}]
 create_clock -name {xcvr_ref_clock} -period 644.53125MHz [get_ports {i_xcvr_ref_clock}]
 
